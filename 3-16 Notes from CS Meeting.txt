@@ -1,0 +1,12 @@
+Notes from 3/16 Meeting
+
+
+Variables
+- train network - turtles can only move along train networks (can only move so far from a rail head)
+- Speed
+- supply level
+
+
+Todo
+- divide map image into squares to make a course grid
+- mark bridges & train networks, roads & paths that can move along
