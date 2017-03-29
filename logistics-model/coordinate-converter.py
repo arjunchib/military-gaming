@@ -50,11 +50,11 @@ scaleFactor = min(60.0 / (maxLat - minLat), 60.0 / (maxLon - minLon))
 
 for i in range(len(stationData)):
     stationData[i][0] = (stationData[i][0] - minLon) * scaleFactor + 2
-    stationData[i][1] = (stationData[i][1] - minLat) * scaleFactor + 15
+    stationData[i][1] = (stationData[i][1] - minLat) * scaleFactor + 2
 
 for i in range(len(junctionData)):
     junctionData[i][0] = (junctionData[i][0] - minLon) * scaleFactor + 2
-    junctionData[i][1] = (junctionData[i][1] - minLat) * scaleFactor + 15
+    junctionData[i][1] = (junctionData[i][1] - minLat) * scaleFactor + 2
 
 for station in stationData:
     stationsWriter.writerow(station)

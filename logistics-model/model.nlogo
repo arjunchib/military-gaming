@@ -1,6 +1,6 @@
 extensions [csv nw]
 
-globals [shortest-path]
+globals [shortest-path min-dist]
 
 breed [stations station]
 undirected-link-breed [tracks track]
@@ -34,6 +34,7 @@ to setup-junctions
     ]
   ]
   ask junctions [set color white]
+  ask junctions [set hidden? true]
 end
 
 to setup-roads
@@ -69,8 +70,10 @@ to setup-tracks
 end
 
 to setup-germans
+  let x [xcor] of one-of junctions with [label = "Mons"]
+  let y [ycor] of one-of junctions with [label = "Mons"]
   create-corps 1 [
-    setxy 22.272708082779694 41.00494879692874
+    setxy x y
     set supply 100
     set current-junction "Mons"
   ]
@@ -78,6 +81,8 @@ end
 
 to step
   move-corps
+  supply-corps
+  update-plots
 end
 
 to move-corps
@@ -86,19 +91,31 @@ to move-corps
   ask one-of junctions with [label = junction-label] [
     set shortest-path nw:turtles-on-path-to one-of junctions with [label = "Meaux"]
   ]
-  show shortest-path
+;  show shortest-path
   let next-junction item 1 shortest-path
   ask corps [
     move-to next-junction
     set current-junction [label] of next-junction
   ]
 end
+
+to supply-corps
+  let station-modifier station-resupply * (1 / (station-damage + 1.0)) + random-float 5 - 2.5
+  ask corps [set supply supply - 10 + station-modifier ]
+
+;  let x1 [xcor] of one-of corps
+;  let y1 [ycor] of one-of corps
+;  set min-dist "Inf"
+;  ask stations [
+;
+;  ]
+end
 @#$#@#$#@
 GRAPHICS-WINDOW
-210
-10
-1066
-867
+252
+21
+1108
+565
 -1
 -1
 13.0
@@ -114,7 +131,7 @@ GRAPHICS-WINDOW
 0
 64
 0
-64
+40
 0
 0
 1
@@ -154,6 +171,69 @@ NIL
 NIL
 NIL
 1
+
+SLIDER
+17
+97
+189
+130
+supply-decay
+supply-decay
+0
+100
+10.0
+1
+1
+NIL
+HORIZONTAL
+
+SLIDER
+21
+147
+193
+180
+station-damage
+station-damage
+0
+100
+0.0
+1
+1
+NIL
+HORIZONTAL
+
+SLIDER
+17
+199
+189
+232
+station-resupply
+station-resupply
+0
+100
+5.0
+1
+1
+NIL
+HORIZONTAL
+
+PLOT
+17
+305
+217
+455
+plot 1
+NIL
+NIL
+0.0
+10.0
+0.0
+10.0
+true
+false
+"" "plot [supply] of one-of corps"
+PENS
+"default" 1.0 0 -16777216 true "" "plot [supply] of one-of corps"
 
 @#$#@#$#@
 ## WHAT IS IT?
