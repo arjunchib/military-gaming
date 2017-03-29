@@ -1,9 +1,16 @@
-extensions [csv]
+extensions [csv nw]
+
+globals [shortest-path]
 
 breed [stations station]
 undirected-link-breed [tracks track]
 breed [junctions junction]
 undirected-link-breed [roads road]
+
+breed [corps a-corps]
+
+corps-own [supply current-junction]
+stations-own [health]
 
 to setup
   clear-all
@@ -11,58 +18,87 @@ to setup
   setup-roads
   setup-stations
   setup-tracks
+  setup-germans
   reset-ticks
 end
 
 to setup-junctions
   let junction-data csv:from-file "junctions.csv"
   set-default-shape junctions "dot"
-  foreach junction-data [ [coord] ->
-    let x item 0 coord
-    let y item 1 coord
-    create-junctions 1 [setxy x y]
+  foreach junction-data [ [data] ->
+    let x item 0 data
+    let y item 1 data
+    create-junctions 1 [
+      setxy x y
+      set label item 2 data
+    ]
   ]
   ask junctions [set color white]
 end
 
 to setup-roads
   let road-data csv:from-file "roads.csv"
-  foreach road-data [ [line] ->
-    let s1 item 0 line
-    let s2 item 1 line
-    let t1 item 2 line
-    let t2 item 3 line
-    ask junctions with [xcor = s1 and ycor = s2] [create-roads-with junctions with [xcor = t1 and ycor = t2]]
+  foreach road-data [ [data] ->
+    let s item 0 data
+    let t item 1 data
+    ask junctions with [label = s] [create-roads-with junctions with [label = t]]
   ]
 end
 
 to setup-stations
   let station-data csv:from-file "stations.csv"
   set-default-shape stations "triangle"
-  foreach station-data [ [coord] ->
-    let x item 0 coord
-    let y item 1 coord
-    create-stations 1 [setxy x y]
+  foreach station-data [ [data] ->
+    let x item 0 data
+    let y item 1 data
+    create-stations 1 [
+      setxy x y
+      set label item 2 data
+    ]
   ]
   ask stations [set color 55]
 end
 
 to setup-tracks
   let track-data csv:from-file "tracks.csv"
-  foreach track-data [ [line] ->
-    let s1 item 0 line
-    let s2 item 1 line
-    let t1 item 2 line
-    let t2 item 3 line
-    ask stations with [xcor = s1 and ycor = s2] [create-tracks-with stations with [xcor = t1 and ycor = t2]]
+  foreach track-data [ [data] ->
+    let s item 0 data
+    let t item 1 data
+    ask stations with [label = s] [create-tracks-with stations with [label = t]]
+  ]
+end
+
+to setup-germans
+  create-corps 1 [
+    setxy 22.272708082779694 41.00494879692874
+    set supply 100
+    set current-junction "Mons"
+  ]
+end
+
+to step
+  move-corps
+end
+
+to move-corps
+  nw:set-context junctions roads
+  let junction-label [current-junction] of one-of corps
+  ask one-of junctions with [label = junction-label] [
+    set shortest-path nw:turtles-on-path-to one-of junctions with [label = "Meaux"]
+  ]
+  show shortest-path
+  let next-junction item 1 shortest-path
+  ask corps [
+    move-to next-junction
+    set current-junction [label] of next-junction
   ]
 end
 @#$#@#$#@
 GRAPHICS-WINDOW
 210
 10
-647
-448
+1066
+867
 -1
 -1
 13.0
@@ -76,9 +112,9 @@ GRAPHICS-WINDOW
 0
 1
 0
-32
+64
 0
-32
+64
 0
 0
 1
@@ -92,6 +128,23 @@ BUTTON
 66
 NIL
 setup
+NIL
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
+1
+
+BUTTON
+101
+35
+164
+68
+NIL
+step
 NIL
 1
 T
