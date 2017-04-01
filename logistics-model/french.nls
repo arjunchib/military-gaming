@@ -7,11 +7,16 @@ globals[destruction]
 to setup-french
   let x [xcor] of one-of junctions with [label = "Mons"]
   let y [ycor] of one-of junctions with [label = "Mons"]
+  set-default-shape french-corps "circle"
+  
   create-french-corps 1 [
     setxy x y
     set supply 100
     set current-junction "Mons"
+    set color blue
+    set size 2
   ]
+  
   
   set destruction 0
 end

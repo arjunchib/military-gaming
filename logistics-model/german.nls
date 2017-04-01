@@ -5,13 +5,14 @@ german-corps-own [supply current-junction]
 to setup-germans
   let x [xcor] of one-of junctions with [label = "Brussels"]
   let y [ycor] of one-of junctions with [label = "Brussels"]
-  set-default-shape french-corps "square"
+  set-default-shape german-corps "square"
   
   create-german-corps 1 [
     setxy x y
     set supply 100
     set current-junction "Brussels"
     set color yellow
+    set size 2
   ]
 end
 
