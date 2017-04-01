@@ -72,10 +72,13 @@ to setup-tracks
   foreach track-data [ [data] ->
     let s item 0 data
     let t item 1 data
-    let trackHealth 30
+
     ask stations with [label = s] [create-tracks-with stations with [label = t]]
 
-    ask tracks [set color health5]
+    ask tracks [
+      set trackHealth 40
+      set color health5
+    ]
   ]
 end
 
@@ -93,6 +96,7 @@ to step
   move-corps
   supply-corps
   update-plots
+  update-tracks
 end
 
 to update-tracks
@@ -101,14 +105,19 @@ to update-tracks
   let health3 [164 131 28]
   let health2 [181 69 14]
   let health1 [199 7 0]
-  let c health5
+  let c 55
+
+  print "test1"
 
   ask tracks [
+    print trackHealth
     if trackHealth >= 0 and trackHealth < 20 [
       set c health1
+     ; print "health1"
     ]
     if trackHealth >= 20 and trackHealth < 40 [
       set c health2
+      ;print "health2"
     ]
     if trackHealth >= 40 and trackHealth < 60 [
       set c health3
@@ -118,6 +127,7 @@ to update-tracks
     ]
     if trackHealth >= 80 and trackHealth < 100 [
       set c health5
+      ;print "test2"
     ]
 
     set color c
