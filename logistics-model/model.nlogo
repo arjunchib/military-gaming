@@ -11,6 +11,8 @@ undirected-link-breed [roads road]
 
 breed [corps a-corps]
 
+tracks-own[trackHealth]
+
 corps-own [supply current-junction]
 stations-own [health]
 
@@ -46,11 +48,13 @@ end
 
 to setup-roads
   let road-data csv:from-file "roads.csv"
+  set-default-shape roads "road"
   foreach road-data [ [data] ->
     let s item 0 data
     let t item 1 data
     ask junctions with [label = s] [create-roads-with junctions with [label = t]]
   ]
+  ask roads [set color white]
 end
 
 to setup-stations
@@ -68,11 +72,17 @@ to setup-stations
 end
 
 to setup-tracks
+  let health5 [130 255 56]
+
   let track-data csv:from-file "tracks.csv"
+  set-default-shape tracks "train"
   foreach track-data [ [data] ->
     let s item 0 data
     let t item 1 data
+    let trackHealth 30
     ask stations with [label = s] [create-tracks-with stations with [label = t]]
+
+    ask tracks [set color health5]
   ]
 end
 
@@ -90,6 +100,37 @@ to step
   move-corps
   supply-corps
   update-plots
+end
+
+to update-tracks
+  let health5 [130 255 56]
+  let health4 [147 193 42]
+  let health3 [164 131 28]
+  let health2 [181 69 14]
+  let health1 [199 7 0]
+  let c health5
+
+  ask tracks [
+    if trackHealth >= 0 and trackHealth < 20 [
+      set c health1
+    ]
+    if trackHealth >= 20 and trackHealth < 40 [
+      set c health2
+    ]
+    if trackHealth >= 40 and trackHealth < 60 [
+      set c health3
+    ]
+    if trackHealth >= 60 and trackHealth < 80 [
+      set c health4
+    ]
+    if trackHealth >= 80 and trackHealth < 100 [
+      set c health5
+    ]
+
+    set color c
+  ]
+
+
 end
 
 to move-corps
@@ -595,6 +636,28 @@ default
 -0.2 0 0.0 1.0
 0.0 1 1.0 0.0
 0.2 0 0.0 1.0
+link direction
+true
+0
+Line -7500403 true 150 150 90 180
+Line -7500403 true 150 150 210 180
+
+road
+0.0
+-0.2 0 0.0 1.0
+0.0 1 2.0 2.0
+0.2 0 0.0 1.0
+link direction
+true
+0
+Line -7500403 true 150 150 90 180
+Line -7500403 true 150 150 210 180
+
+train
+0.0
+-0.2 1 1.0 0.0
+0.0 0 0.0 1.0
+0.2 1 1.0 0.0
 link direction
 true
 0
