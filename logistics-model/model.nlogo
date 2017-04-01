@@ -1,6 +1,6 @@
 extensions [csv nw]
 
-globals [shortest-path min-dist]
+globals [shortest-path min-dist railhead]
 
 breed [stations station]
 undirected-link-breed [tracks track]
@@ -19,7 +19,12 @@ to setup
   setup-stations
   setup-tracks
   setup-germans
+  setup-railhead
   reset-ticks
+end
+
+to setup-railhead
+  set railhead "Cambrai"
 end
 
 to setup-junctions
@@ -114,8 +119,8 @@ end
 GRAPHICS-WINDOW
 252
 21
-1108
-565
+1105
+563
 -1
 -1
 13.0
