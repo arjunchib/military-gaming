@@ -1,0 +1,7 @@
+German corps behavior:
+
+- advance (start from brux => meaux)
+- pursuit the french: if any corp a french corp w/i x radius => pursue: shortest path to where french is => the what: if w/i some rad y < x => attack
+otherwise just move down t
+- rate of loss of supply: (ammunination only for now => only loss during battle)
+- resupply based on how close the corp is to the rail head => take into acct rate of resupply

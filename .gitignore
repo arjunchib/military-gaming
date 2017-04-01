@@ -1,1 +1,5 @@
-.model.tmp.nlogo
+# emacs files
+*.*~
+
+# mac file
+.DS_Store
