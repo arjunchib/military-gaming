@@ -1,4 +1,4 @@
-__includes ["german.nls"]
+__includes ["german.nls" "french.nls" "infrastructure.nls"]
 
 extensions [csv nw]
 
