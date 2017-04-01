@@ -1,2 +1,37 @@
+breed [german-corps a-german-corps]
 
-;; German corp model goes here
+german-corps-own [supply current-junction]
+
+to setup-germans
+  let x [xcor] of one-of junctions with [label = "Mons"]
+  let y [ycor] of one-of junctions with [label = "Mons"]
+  create-german-corps 1 [
+    setxy x y
+    set supply 100
+    set current-junction "Mons"
+  ]
+end
+
+to step-german
+  move-german-corps
+  supply-german-corps
+end
+
+to move-german-corps
+  nw:set-context junctions roads
+  let junction-label [current-junction] of one-of german-corps
+  ask one-of junctions with [label = junction-label] [
+    set shortest-path nw:turtles-on-path-to one-of junctions with [label = "Meaux"]
+  ]
+;  show shortest-path
+  let next-junction item 1 shortest-path
+  ask german-corps [
+    move-to next-junction
+    set current-junction [label] of next-junction
+  ]
+end
+
+to supply-german-corps
+  let station-modifier station-resupply * (1 / (station-damage + 1.0)) + random-float 5 - 2.5
+  ask german-corps [set supply supply - 10 + station-modifier ]
+end

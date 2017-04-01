@@ -1,165 +1,20 @@
+__includes["german.nls" "french.nls" "infrastructure.nls"]
+
 extensions [csv nw]
-
-globals [shortest-path min-dist]
-
-breed [stations station]
-undirected-link-breed [tracks track]
-breed [junctions junction]
-undirected-link-breed [roads road]
-
-breed [corps a-corps]
-
-tracks-own[trackHealth]
-
-corps-own [supply current-junction]
-stations-own [health]
 
 to setup
   clear-all
-  setup-junctions
-  setup-roads
-  setup-stations
-  setup-tracks
+  setup-infrastructure
   setup-germans
+  setup-french
   reset-ticks
 end
 
-to setup-junctions
-  let junction-data csv:from-file "junctions.csv"
-  set-default-shape junctions "dot"
-  foreach junction-data [ [data] ->
-    let x item 0 data
-    let y item 1 data
-    create-junctions 1 [
-      setxy x y
-      set label item 2 data
-    ]
-  ]
-  ask junctions [set color white]
-  ask junctions [set hidden? true]
-end
-
-to setup-roads
-  let road-data csv:from-file "roads.csv"
-  set-default-shape roads "road"
-  foreach road-data [ [data] ->
-    let s item 0 data
-    let t item 1 data
-    ask junctions with [label = s] [create-roads-with junctions with [label = t]]
-  ]
-  ask roads [set color white]
-end
-
-to setup-stations
-  let station-data csv:from-file "stations.csv"
-  set-default-shape stations "triangle"
-  foreach station-data [ [data] ->
-    let x item 0 data
-    let y item 1 data
-    create-stations 1 [
-      setxy x y
-      set label item 2 data
-    ]
-  ]
-  ask stations [set color 55]
-end
-
-to setup-tracks
-  let health5 [130 255 56]
-
-  let track-data csv:from-file "tracks.csv"
-  set-default-shape tracks "train"
-  foreach track-data [ [data] ->
-    let s item 0 data
-    let t item 1 data
-
-    ask stations with [label = s] [create-tracks-with stations with [label = t]]
-
-    ask tracks [
-      set trackHealth 40
-      set color health5
-    ]
-  ]
-end
-
-to setup-germans
-  let x [xcor] of one-of junctions with [label = "Mons"]
-  let y [ycor] of one-of junctions with [label = "Mons"]
-  create-corps 1 [
-    setxy x y
-    set supply 100
-    set current-junction "Mons"
-  ]
-end
-
 to step
-  move-corps
-  supply-corps
+  step-infrastructure
+  step-german
+  step-french
   update-plots
-  update-tracks
-end
-
-to update-tracks
-  let health5 [130 255 56]
-  let health4 [147 193 42]
-  let health3 [164 131 28]
-  let health2 [181 69 14]
-  let health1 [199 7 0]
-  let c 55
-
-  ;print "test1"
-
-  ask tracks [
-    ;print trackHealth
-    if trackHealth >= 0 and trackHealth < 20 [
-      set c health1
-     ; print "health1"
-    ]
-    if trackHealth >= 20 and trackHealth < 40 [
-      set c health2
-      ;print "health2"
-    ]
-    if trackHealth >= 40 and trackHealth < 60 [
-      set c health3
-    ]
-    if trackHealth >= 60 and trackHealth < 80 [
-      set c health4
-    ]
-    if trackHealth >= 80 and trackHealth < 100 [
-      set c health5
-      ;print "test2"
-    ]
-
-    set color c
-  ]
-
-
-end
-
-to move-corps
-  nw:set-context junctions roads
-  let junction-label [current-junction] of one-of corps
-  ask one-of junctions with [label = junction-label] [
-    set shortest-path nw:turtles-on-path-to one-of junctions with [label = "Meaux"]
-  ]
-;  show shortest-path
-  let next-junction item 1 shortest-path
-  ask corps [
-    move-to next-junction
-    set current-junction [label] of next-junction
-  ]
-end
-
-to supply-corps
-  let station-modifier station-resupply * (1 / (station-damage + 1.0)) + random-float 5 - 2.5
-  ask corps [set supply supply - 10 + station-modifier ]
-
-;  let x1 [xcor] of one-of corps
-;  let y1 [ycor] of one-of corps
-;  set min-dist "Inf"
-;  ask stations [
-;
-;  ]
 end
 @#$#@#$#@
 GRAPHICS-WINDOW
