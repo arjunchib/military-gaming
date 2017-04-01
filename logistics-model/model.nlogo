@@ -107,10 +107,10 @@ to update-tracks
   let health1 [199 7 0]
   let c 55
 
-  print "test1"
+  ;print "test1"
 
   ask tracks [
-    print trackHealth
+    ;print trackHealth
     if trackHealth >= 0 and trackHealth < 20 [
       set c health1
      ; print "health1"
