@@ -137,9 +137,9 @@ NIL
 10.0
 true
 false
-"" "plot [supply] of one-of corps"
+"" "plot [supply] of one-of german-corps"
 PENS
-"default" 1.0 0 -16777216 true "" "plot [supply] of one-of corps"
+"default" 1.0 0 -16777216 true "" "plot [supply] of one-of -germancorps"
 
 @#$#@#$#@
 ## WHAT IS IT?

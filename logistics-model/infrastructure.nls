@@ -1,4 +1,4 @@
-globals [shortest-path min-dist]
+globals [shortest-path min-dist railhead]
 
 breed [stations station]
 undirected-link-breed [tracks track]
@@ -13,6 +13,7 @@ to setup-infrastructure
   setup-roads
   setup-stations
   setup-tracks
+  set railhead "Cambrai"
 end
 
 to step-infrastructure
