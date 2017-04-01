@@ -2,10 +2,30 @@ breed [french-corps a-french-corps]
 
 french-corps-own [supply current-junction]
 
+globals[destruction]
+
 to setup-french
-  ;setup
+  let x [xcor] of one-of junctions with [label = "Mons"]
+  let y [ycor] of one-of junctions with [label = "Mons"]
+  create-french-corps 1 [
+    setxy x y
+    set supply 100
+    set current-junction "Mons"
+  ]
+  
+  set destruction 0
 end
 
 to step-french
-  ;step
+  ifelse  destruction > french-destruction-capacity  
+  [retreat-french] 
+  [destroy-french]
+end
+
+to retreat-french
+  
+end
+
+to destroy-french
+  
 end

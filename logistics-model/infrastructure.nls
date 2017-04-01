@@ -72,7 +72,7 @@ to setup-tracks
     ask stations with [label = s] [create-tracks-with stations with [label = t]]
 
     ask tracks [
-      set trackHealth 40
+      set trackHealth 100
       set color health5
     ]
   ]
@@ -104,7 +104,7 @@ to update-tracks
     if trackHealth >= 60 and trackHealth < 80 [
       set c health4
     ]
-    if trackHealth >= 80 and trackHealth < 100 [
+    if trackHealth >= 80 and trackHealth <= 100 [
       set c health5
       ;print "test2"
     ]

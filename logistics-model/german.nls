@@ -3,12 +3,15 @@ breed [german-corps a-german-corps]
 german-corps-own [supply current-junction]
 
 to setup-germans
-  let x [xcor] of one-of junctions with [label = "Mons"]
-  let y [ycor] of one-of junctions with [label = "Mons"]
+  let x [xcor] of one-of junctions with [label = "Brussels"]
+  let y [ycor] of one-of junctions with [label = "Brussels"]
+  set-default-shape french-corps "square"
+  
   create-german-corps 1 [
     setxy x y
     set supply 100
-    set current-junction "Mons"
+    set current-junction "Brussels"
+    set color yellow
   ]
 end
 

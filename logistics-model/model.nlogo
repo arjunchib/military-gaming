@@ -141,6 +141,51 @@ false
 PENS
 "default" 1.0 0 -16777216 true "" "plot [supply] of one-of -germancorps"
 
+SLIDER
+24
+496
+225
+529
+french-retreat-distance
+french-retreat-distance
+0
+20
+10.0
+1
+1
+NIL
+HORIZONTAL
+
+SLIDER
+3
+535
+241
+568
+french-destruction-capacity
+french-destruction-capacity
+0
+1700
+500.0
+100
+1
+NIL
+HORIZONTAL
+
+SLIDER
+38
+573
+210
+606
+french-attrition
+french-attrition
+0
+100
+50.0
+1
+1
+NIL
+HORIZONTAL
+
 @#$#@#$#@
 ## WHAT IS IT?
 
