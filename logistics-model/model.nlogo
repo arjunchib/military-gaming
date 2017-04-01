@@ -1,3 +1,5 @@
+__includes ["german.nls"]
+
 extensions [csv nw]
 
 globals [shortest-path min-dist railhead]
