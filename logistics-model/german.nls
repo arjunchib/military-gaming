@@ -37,5 +37,7 @@ end
 
 to supply-german-corps
   let station-modifier station-resupply * (1 / (station-damage + 1.0)) + random-float 5 - 2.5
+  
+  ; TODO: ONLY lose supply during battle!!!!
   ask german-corps [set supply supply - 10 + station-modifier ]
 end
