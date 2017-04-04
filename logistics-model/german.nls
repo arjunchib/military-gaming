@@ -35,30 +35,31 @@ to move-german-corps
   ]
 end
 
-;; Check for french corps in perimeter
-;; TODO: change this but for now:
-;; pursue_rad = 10: if w/i 10 => pursue
-;; attack_rad = 5; if w/i 5 => fight
-;; If french corp turtle is w/i above rads => pursue or fight
 to check-french-corps
   ask german-corps [ 
-    ifelse any? french-corps in-radius pursue-radius 
+    ;; Only pursue/attack french-corps if they're alive
+    ifelse any? french-corps in-radius pursue-radius and [size] of one-of french-corps > 0
     [
-      ;; Pursue then attack
-      pursue-french-corps
       let in-attack-rad any? french-corps in-radius attack-radius
-      print(word  "pursuing: "  in-attack-rad )
+      print(word  "In attack radius yet? "  in-attack-rad )
       
-      if in-attack-rad
-        [ 
-          attack-french-corps 
-          output-print "attacking"
-        ]
+      ;; If in attack-rad => attack
+      ifelse in-attack-rad
+      [ 
+        attack-french-corps 
+        output-print "attacking"
+      ]
+      ;; Else, keep moving toward
+      [
+        print "pursuing" 
+        
+        ;; Pursue then attack
+        pursue-french-corps
+      ]
     ]
     [ 
       print "moving towards Meaux"
-      move-german-corps 
-    
+      move-german-corps     
     ]
   ]
 end
@@ -85,10 +86,22 @@ to pursue-french-corps
 end
 
 to attack-french-corps
-   ;; do things
-  
-  ;; Lose supply
-  ask german-corps [ set supply supply - supply-decay ]
+  ;; Reduce french-corps size?
+  ifelse [size] of one-of french-corps > 0
+  [
+    print "attacking french-corps"
+    
+    ;; Fight
+    ;; For now just decrease the size of french-corps
+    ask french-corps [ set size size - 1 ]
+    
+    ;; Lose supply
+    ask german-corps [ set supply supply - supply-decay ]
+  ]
+  [
+    ;; All dead, continue moving to Meaux
+    print "french all dead; resume moving towards Meaux"
+  ]
 end
 
 to supply-german-corps
