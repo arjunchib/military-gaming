@@ -22,6 +22,9 @@ to step-german
   supply-german-corps
 end
 
+;; dest_label: label of the destination
+;; This proc moves the German corps along the shortest path between the 
+;; current location of the German corps and the destination
 to move-german-corps [ dest_label ]
   nw:set-context junctions roads
   let junction-label [current-junction] of one-of german-corps
