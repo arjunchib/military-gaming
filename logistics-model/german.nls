@@ -66,14 +66,14 @@ to check-french-corps
       ]
     ]
     [ 
-      print "Not near French-corps or French-corps are all dead; Moving towards Meaux"
+      ;print "Not near French-corps or French-corps are all dead; Moving towards Meaux"
       move-german-corps one-of junctions with [label = "Meaux"]
     ]
   ]
 end
 
 to pursue-french-corps
-  print "Pursuing French-corps" 
+  ;print "Pursuing French-corps" 
   
   ;; Follow French's movement direction
   move-german-corps [current-junction] of one-of french-corps
@@ -81,7 +81,7 @@ end
 
 to attack-french-corps
   ;; Reduce french-corps size?
-  print "Attacking french-corps"
+  ;print "Attacking french-corps"
   
   ;; Fight
   ;; For now just decrease the size of french-corps
