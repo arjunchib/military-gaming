@@ -44,17 +44,44 @@ to check-french-corps
   ask german-corps [ 
     ifelse any? french-corps in-radius pursue-radius 
     [
-      ifelse any? french-corps in-radius attack-radius 
-        [ attack-french-corps ]
-        [ pursue-french-corps ]
+      ;; Pursue then attack
+      pursue-french-corps
+      let in-attack-rad any? french-corps in-radius attack-radius
+      print(word  "pursuing: "  in-attack-rad )
+      
+      if in-attack-rad
+        [ 
+          attack-french-corps 
+          output-print "attacking"
+        ]
     ]
-    [ move-german-corps ]
+    [ 
+      print "moving towards Meaux"
+      move-german-corps 
+    
+    ]
   ]
 end
 
+;; TODO: Refactor this and group with move-german-corps => pass dest as param
 to pursue-french-corps
   ;; Follow French's movement direction
-  ;; TODO: HOW???
+  nw:set-context junctions roads
+  let junction-label [current-junction] of one-of german-corps
+  
+  ;; Get french-corps' junction
+  let french-junction-label [current-junction] of one-of french-corps
+  
+  ;; Move towards that junction
+  ask one-of junctions with [label = junction-label] [
+    set shortest-path nw:turtles-on-path-to one-of junctions with [label = french-junction-label]
+  ]
+;  show shortest-path
+  let next-junction item 1 shortest-path
+  ask german-corps [
+    move-to next-junction
+    set current-junction [label] of next-junction
+  ]
 end
 
 to attack-french-corps
