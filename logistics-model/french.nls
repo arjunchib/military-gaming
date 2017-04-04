@@ -34,12 +34,12 @@ to destroy-french
   nw:set-context junctions roads
   ask french-corps [
     let current-junction-label [label] of current-junction
-    let current-station one-of stations with [label = current-junction-label]
-    if (current-station != nobody) [
-      ask current-station [ask my-out-tracks [set color white]]
+    let my-current-station one-of stations with [label = current-junction-label]
+    if (my-current-station != nobody) [
+      ask my-current-station [ask my-out-tracks [set color white]]
     ]
 
-    ;set shortest-path (list current-junction)
+    let shortest-path (list current-junction)
     ask current-junction [
       set shortest-path nw:turtles-on-path-to one-of junctions with [label = "Meaux"]
     ]

@@ -5,13 +5,13 @@ german-corps-own [supply current-junction]
 to setup-germans
   set-default-shape german-corps "square"
   
-  let start-station one-of stations with [label = "Brussels"]
+  let start-junction one-of junctions with [label = "Brussels"]
   
   create-german-corps 1 
   [
-    setxy [xcor] of start-station [ycor] of start-station
+    setxy [xcor] of start-junction [ycor] of start-junction
     set supply 100
-    set current-junction "Brussels"
+    set current-junction start-junction
     set color yellow
     set size 2
   ]
@@ -25,20 +25,23 @@ end
 ;; dest_label: label of the destination
 ;; This proc moves the German corps along the shortest path between the 
 ;; current location of the German corps and the destination
-to move-german-corps [ dest_label ]
+to move-german-corps [ dest-junction ]
   nw:set-context junctions roads
-  let junction-label [current-junction] of one-of german-corps
-  let shortest-path (list current-junction)
-  ask one-of junctions with [label = junction-label] 
-  [
-    set shortest-path nw:turtles-on-path-to one-of junctions with [label = dest_label]
-  ]
-   show shortest-path
-  let next-junction item 1 shortest-path
-  ask german-corps
-  [
-    move-to next-junction
-    set current-junction [label] of next-junction
+  let my-current-junction [current-junction] of one-of german-corps
+  if my-current-junction != dest-junction [
+    show my-current-junction
+    let shortest-path (list my-current-junction)
+    ask my-current-junction 
+    [
+      set shortest-path nw:turtles-on-path-to dest-junction
+    ]
+    show shortest-path
+    let next-junction item 1 shortest-path
+    ask german-corps
+    [
+      move-to next-junction
+      set current-junction next-junction
+    ]
   ]
 end
 
@@ -64,7 +67,7 @@ to check-french-corps
     ]
     [ 
       print "Not near French-corps or French-corps are all dead; Moving towards Meaux"
-      ;move-german-corps "Meaux"    
+      move-german-corps one-of junctions with [label = "Meaux"]
     ]
   ]
 end
@@ -73,7 +76,7 @@ to pursue-french-corps
   print "Pursuing French-corps" 
   
   ;; Follow French's movement direction
-  ;move-german-corps [current-junction] of one-of french-corps
+  move-german-corps [current-junction] of one-of french-corps
 end
 
 to attack-french-corps
@@ -82,7 +85,10 @@ to attack-french-corps
   
   ;; Fight
   ;; For now just decrease the size of french-corps
-  ask french-corps [ set size size - 1 ]
+  ask french-corps [
+    set size size - 1
+    if size <= 0 [die]
+  ]
   
   ;; Lose supply
   ask german-corps [ set supply supply - supply-decay ]
