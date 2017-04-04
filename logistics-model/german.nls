@@ -77,21 +77,14 @@ end
 
 to attack-french-corps
   ;; Reduce french-corps size?
-  ifelse [size] of one-of french-corps > 0
-  [
-    print "Attacking french-corps"
-    
-    ;; Fight
-    ;; For now just decrease the size of french-corps
-    ask french-corps [ set size size - 1 ]
-    
-    ;; Lose supply
-    ask german-corps [ set supply supply - supply-decay ]
-  ]
-  [
-    ;; All dead, continue moving to Meaux
-    print "French all dead; resume moving towards Meaux"
-  ]
+  print "Attacking french-corps"
+  
+  ;; Fight
+  ;; For now just decrease the size of french-corps
+  ask french-corps [ set size size - 1 ]
+  
+  ;; Lose supply
+  ask german-corps [ set supply supply - supply-decay ]
 end
 
 to supply-german-corps
