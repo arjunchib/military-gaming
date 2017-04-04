@@ -52,18 +52,22 @@ to check-french-corps
 end
 
 to pursue-french-corps
-
-   ;; do things
+  ;; Follow French's movement direction
+  ;; TODO: HOW???
 end
 
 to attack-french-corps
-
    ;; do things
+  
+  ;; Lose supply
+  ask german-corps [ set supply supply - supply-decay ]
 end
 
 to supply-german-corps
   let station-modifier station-resupply * (1 / (station-damage + 1.0)) + random-float 5 - 2.5
   
-  ; TODO: ONLY lose supply during battle!!!!
-  ask german-corps [set supply supply - 10 + station-modifier ]
+  ;;TODO: WHAT?
+  ;; ONLY lose supply (-supply-decay) during battle!!
+  ;;ask german-corps [set supply supply - supply-decay + station-modifier ]
+  ask german-corps [set supply supply + station-modifier ]
 end
