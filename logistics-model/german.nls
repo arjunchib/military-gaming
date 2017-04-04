@@ -41,6 +41,10 @@ to move-german-corps [ dest_label ]
   ]
 end
 
+;; Check to see if French corps are nearby
+;; If within pursue-rad => Pursue
+;;      If within attack-rad => Attack
+;; Else keep moving towards Meaux
 to check-french-corps
   ask german-corps 
   [ 
