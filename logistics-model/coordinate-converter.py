@@ -14,6 +14,7 @@ junctionsWriter = csv.writer(junctionsFile, delimiter=',', quotechar='|',
                          quoting=csv.QUOTE_MINIMAL)
 junctionData = []
 
+padding = 2
 minLat = float('inf')
 maxLat = 0.0
 minLon = float('inf')
@@ -47,14 +48,20 @@ for junction in junctions:
         maxLon = lon
 
 scaleFactor = min(60.0 / (maxLat - minLat), 60.0 / (maxLon - minLon))
+topLeftLat = maxLat + padding / scaleFactor
+topLeftLon = minLat - padding / scaleFactor
+botRightLat = minLat - padding / scaleFactor
+botRightLon = maxLon + padding /scaleFactor
+print("Top Left: " + str(topLeftLat) + ", " + str(topLeftLon))
+print("Bottom Right: " + str(botRightLat) + ", " + str(botRightLon))
 
 for i in range(len(stationData)):
-    stationData[i][0] = (stationData[i][0] - minLon) * scaleFactor + 2
-    stationData[i][1] = (stationData[i][1] - minLat) * scaleFactor + 2
+    stationData[i][0] = (stationData[i][0] - minLon) * scaleFactor + padding
+    stationData[i][1] = (stationData[i][1] - minLat) * scaleFactor + padding
 
 for i in range(len(junctionData)):
-    junctionData[i][0] = (junctionData[i][0] - minLon) * scaleFactor + 2
-    junctionData[i][1] = (junctionData[i][1] - minLat) * scaleFactor + 2
+    junctionData[i][0] = (junctionData[i][0] - minLon) * scaleFactor + padding
+    junctionData[i][1] = (junctionData[i][1] - minLat) * scaleFactor + padding
 
 for station in stationData:
     stationsWriter.writerow(station)

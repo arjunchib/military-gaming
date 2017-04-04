@@ -15,6 +15,7 @@ to step
   step-german
   step-french
   update-plots
+  tick
 end
 @#$#@#$#@
 GRAPHICS-WINDOW
@@ -38,8 +39,8 @@ GRAPHICS-WINDOW
 64
 0
 40
-0
-0
+1
+1
 1
 ticks
 30.0
@@ -56,7 +57,7 @@ NIL
 T
 OBSERVER
 NIL
-NIL
+I
 NIL
 NIL
 1
@@ -73,7 +74,7 @@ NIL
 T
 OBSERVER
 NIL
-NIL
+S
 NIL
 NIL
 1
@@ -215,6 +216,23 @@ pursue-radius
 1
 NIL
 HORIZONTAL
+
+BUTTON
+178
+39
+241
+72
+go
+step
+T
+1
+T
+OBSERVER
+NIL
+G
+NIL
+NIL
+1
 
 @#$#@#$#@
 ## WHAT IS IT?
@@ -486,6 +504,35 @@ Circle -7500403 true true 60 60 180
 Circle -16777216 true false 90 90 120
 Circle -7500403 true true 120 120 60
 
+train freight engine
+true
+0
+Rectangle -7500403 true true 180 0 195 300
+Polygon -7500403 true true 194 19 134 18 126 22 120 135 105 135 105 285 150 285 195 285 210 285 210 15
+Polygon -955883 true false 179 19 150 37 150 75 150 285 135 285 135 30 148 18
+Circle -16777216 true false 195 253 30
+Circle -16777216 true false 195 220 30
+Circle -16777216 true false 195 65 30
+Circle -16777216 true false 195 32 30
+Rectangle -7500403 true true 90 76 195 136
+Rectangle -16777216 true false 98 86 120 124
+Line -7500403 true 90 104 150 104
+Rectangle -16777216 false false 90 75 180 135
+Rectangle -16777216 false false 195 0 180 300
+Rectangle -1 true false 111 282 118 289
+Rectangle -1 true false 131 13 138 20
+Rectangle -16777216 true false 195 99 212 209
+Rectangle -16777216 true false 180 290 195 299
+Line -16777216 false 150 10 182 9
+Rectangle -7500403 true true 97 181 106 212
+Rectangle -7500403 true true 96 227 105 258
+Line -16777216 false 105 135 105 285
+Rectangle -16777216 true false 90 105 90 135
+Line -16777216 false 116 48 116 63
+Rectangle -1184463 true false 85 92 92 101
+Rectangle -16777216 true false 180 1 195 10
+Line -16777216 false 98 76 98 135
+
 tree
 false
 0
@@ -558,7 +605,7 @@ false
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 @#$#@#$#@
-NetLogo 6.0
+NetLogo 6.0.1
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@

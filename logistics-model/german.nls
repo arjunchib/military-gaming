@@ -3,13 +3,13 @@ breed [german-corps a-german-corps]
 german-corps-own [supply current-junction]
 
 to setup-germans
-  let x [xcor] of one-of junctions with [label = "Brussels"]
-  let y [ycor] of one-of junctions with [label = "Brussels"]
   set-default-shape german-corps "square"
+  
+  let start-station one-of stations with [label = "Brussels"]
   
   create-german-corps 1 
   [
-    setxy x y
+    setxy [xcor] of start-station [ycor] of start-station
     set supply 100
     set current-junction "Brussels"
     set color yellow
@@ -28,11 +28,12 @@ end
 to move-german-corps [ dest_label ]
   nw:set-context junctions roads
   let junction-label [current-junction] of one-of german-corps
+  let shortest-path (list current-junction)
   ask one-of junctions with [label = junction-label] 
   [
     set shortest-path nw:turtles-on-path-to one-of junctions with [label = dest_label]
   ]
-  ; show shortest-path
+   show shortest-path
   let next-junction item 1 shortest-path
   ask german-corps
   [
@@ -63,7 +64,7 @@ to check-french-corps
     ]
     [ 
       print "Not near French-corps or French-corps are all dead; Moving towards Meaux"
-      move-german-corps "Meaux"    
+      ;move-german-corps "Meaux"    
     ]
   ]
 end
@@ -72,7 +73,7 @@ to pursue-french-corps
   print "Pursuing French-corps" 
   
   ;; Follow French's movement direction
-  move-german-corps [current-junction] of one-of french-corps
+  ;move-german-corps [current-junction] of one-of french-corps
 end
 
 to attack-french-corps
