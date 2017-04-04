@@ -128,7 +128,7 @@ PLOT
 305
 217
 455
-plot 1
+German Corps' Suplly
 NIL
 NIL
 0.0
