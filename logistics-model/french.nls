@@ -32,5 +32,17 @@ to retreat-french
 end
 
 to destroy-french
+  nw:set-context junctions roads
+  let junction-label [current-junction] of one-of french-corps
+  ask one-of junctions with [label = junction-label] [
+    set shortest-path nw:turtles-on-path-to one-of junctions with [label = "Meaux"]
+  ]
+;  show shortest-path
+  let next-junction item 1 shortest-path
+  ;ask link next-junction current-junction [set color white]
+  ask french-corps [
+    move-to next-junction
+    set current-junction [label] of next-junction
+  ]
   
 end
