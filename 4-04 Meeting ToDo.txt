@@ -1,0 +1,5 @@
+- decrease health of tracks highlighted by french - Jess
+- motion - Arjun
+- resupply based off of the distance to the railhead, only for German Corps - Vy
+- map background
+- multiple corps
