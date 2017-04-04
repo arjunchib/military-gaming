@@ -72,10 +72,7 @@ to pursue-french-corps
   print "Pursuing French-corps" 
   
   ;; Follow French's movement direction
-  ;; Get french-corps' junction
-  let french-junction-label [current-junction] of one-of french-corps
-  
-  move-german-corps french-junction-label
+  move-german-corps [current-junction] of one-of french-corps
 end
 
 to attack-french-corps
