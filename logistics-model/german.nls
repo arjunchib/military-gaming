@@ -1,6 +1,6 @@
 breed [german-corps a-german-corps]
 
-german-corps-own [supply current-junction]
+german-corps-own [supply current-junction fr-corps-nearby]
 
 to setup-germans
   let x [xcor] of one-of junctions with [label = "Brussels"]
@@ -11,6 +11,7 @@ to setup-germans
     setxy x y
     set supply 100
     set current-junction "Brussels"
+    set fr-corps-nearby any? turtles with [ breed != [breed] of myself and in-radius 10 [distance] of myself ]
     set color yellow
     set size 2
   ]
@@ -18,6 +19,7 @@ end
 
 to step-german
   move-german-corps
+  check-french-corps
   supply-german-corps
 end
 
@@ -32,6 +34,17 @@ to move-german-corps
   ask german-corps [
     move-to next-junction
     set current-junction [label] of next-junction
+  ]
+end
+
+;; Check for french corps in perimeter
+;; TODO: change this but for now:
+;; pursue_rad = 10: if w/i 10 => pursue
+;; attack_rad = 5; if w/i 5 => fight
+;; If french corp turtle is w/i above rads => pursue or fight
+to check-french-corps
+  ask german-corps [
+    
   ]
 end
 
