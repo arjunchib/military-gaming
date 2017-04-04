@@ -11,7 +11,8 @@ to setup-germans
     setxy x y
     set supply 100
     set current-junction "Brussels"
-    set fr-corps-nearby any? turtles with [ breed != [breed] of myself and in-radius 10 [distance] of myself ]
+    set fr-corps-nearby any? one-of french-corps in-radius 10
+    ;set is-fr-corps-nearby any? turtles with [ breed != [breed] of myself and in-radius 10 [distance] of myself ]
     set color yellow
     set size 2
   ]
@@ -43,8 +44,8 @@ end
 ;; attack_rad = 5; if w/i 5 => fight
 ;; If french corp turtle is w/i above rads => pursue or fight
 to check-french-corps
-  ask german-corps [
-    
+  ask german-corps [ 
+    set fr-corps-nearby any? one-of french-corps in-radius 10
   ]
 end
 
