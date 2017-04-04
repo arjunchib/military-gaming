@@ -47,18 +47,14 @@ to check-french-corps
       ifelse in-attack-rad
       [ 
         attack-french-corps 
-        output-print "attacking"
       ]
       ;; Else, keep moving toward
-      [
-        print "pursuing" 
-        
-        ;; Pursue then attack
+      [ ;; Pursue then attack
         pursue-french-corps
       ]
     ]
     [ 
-      print "moving towards Meaux"
+      print "Not near French-corps or French-corps are all dead; Moving towards Meaux"
       move-german-corps     
     ]
   ]
@@ -66,6 +62,8 @@ end
 
 ;; TODO: Refactor this and group with move-german-corps => pass dest as param
 to pursue-french-corps
+  print "Pursuing French-corps" 
+  
   ;; Follow French's movement direction
   nw:set-context junctions roads
   let junction-label [current-junction] of one-of german-corps
@@ -89,7 +87,7 @@ to attack-french-corps
   ;; Reduce french-corps size?
   ifelse [size] of one-of french-corps > 0
   [
-    print "attacking french-corps"
+    print "Attacking french-corps"
     
     ;; Fight
     ;; For now just decrease the size of french-corps
@@ -100,7 +98,7 @@ to attack-french-corps
   ]
   [
     ;; All dead, continue moving to Meaux
-    print "french all dead; resume moving towards Meaux"
+    print "French all dead; resume moving towards Meaux"
   ]
 end
 
