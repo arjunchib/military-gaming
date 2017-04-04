@@ -128,7 +128,7 @@ PLOT
 305
 217
 455
-German Corps' Suplly
+German Corps' Supply
 NIL
 NIL
 0.0
@@ -181,6 +181,36 @@ french-attrition
 0
 100
 50.0
+1
+1
+NIL
+HORIZONTAL
+
+SLIDER
+371
+576
+543
+609
+attack-radius
+attack-radius
+0
+5
+4.0
+1
+1
+NIL
+HORIZONTAL
+
+SLIDER
+566
+578
+738
+611
+pursue-radius
+pursue-radius
+0
+10
+4.0
 1
 1
 NIL

@@ -17,7 +17,6 @@ to setup-germans
 end
 
 to step-german
-  move-german-corps
   check-french-corps
   supply-german-corps
 end
@@ -43,11 +42,13 @@ end
 ;; If french corp turtle is w/i above rads => pursue or fight
 to check-french-corps
   ask german-corps [ 
-    if any? french-corps in-radius 10 [
-      ifelse any? french-corps in-radius 5 
+    ifelse any? french-corps in-radius pursue-radius 
+    [
+      ifelse any? french-corps in-radius attack-radius 
         [ attack-french-corps ]
         [ pursue-french-corps ]
     ]
+    [ move-german-corps ]
   ]
 end
 
