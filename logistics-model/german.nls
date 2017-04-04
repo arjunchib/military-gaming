@@ -35,32 +35,18 @@ to move-german-corps [ dest_label ]
   ]
 end
 
-;; TODO: Refactor this and group with move-german-corps => pass dest as param
-to pursue-french-corps
-  print "Pursuing French-corps" 
-  
-  ;; Follow French's movement direction
-  ;; Get french-corps' junction
-  let french-junction-label [current-junction] of one-of french-corps
-  
-  move-german-corps french-junction-label
-end
-
 to check-french-corps
   ask german-corps [ 
     ;; Only pursue/attack french-corps if they're alive
     ifelse any? french-corps in-radius pursue-radius and [size] of one-of french-corps > 0
     [
-      let in-attack-rad any? french-corps in-radius attack-radius
-      print(word  "In attack radius yet? "  in-attack-rad )
-      
       ;; If in attack-rad => attack
-      ifelse in-attack-rad
+      ifelse any? french-corps in-radius attack-radius
       [ 
         attack-french-corps 
       ]
       ;; Else, keep moving toward
-      [ ;; Pursue then attack
+      [ 
         pursue-french-corps
       ]
     ]
@@ -71,6 +57,15 @@ to check-french-corps
   ]
 end
 
+to pursue-french-corps
+  print "Pursuing French-corps" 
+  
+  ;; Follow French's movement direction
+  ;; Get french-corps' junction
+  let french-junction-label [current-junction] of one-of french-corps
+  
+  move-german-corps french-junction-label
+end
 
 to attack-french-corps
   ;; Reduce french-corps size?
@@ -93,9 +88,7 @@ end
 
 to supply-german-corps
   let station-modifier station-resupply * (1 / (station-damage + 1.0)) + random-float 5 - 2.5
-  
-  ;;TODO: WHAT?
+
   ;; ONLY lose supply (-supply-decay) during battle!!
-  ;;ask german-corps [set supply supply - supply-decay + station-modifier ]
   ask german-corps [set supply supply + station-modifier ]
 end
