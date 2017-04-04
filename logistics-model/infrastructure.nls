@@ -6,7 +6,7 @@ undirected-link-breed [tracks track]
 breed [junctions junction]
 undirected-link-breed [roads road]
 
-trains-own [current-station speed supply capacity]
+trains-own [current-station previous-station speed supply capacity]
 tracks-own [health]
 stations-own [supply]
 
@@ -132,10 +132,12 @@ to update-trains
         ]
         let next-station item 1 shortest-path
         face next-station
+        set previous-station current-station
         set current-station next-station
       ]
     ][
       forward speed
+      ask track [who] of previous-station [who] of current-station [set health health - 1]
     ]
   ]
 end
