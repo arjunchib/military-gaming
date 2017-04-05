@@ -48,12 +48,12 @@ for junction in junctions:
         maxLon = lon
 
 scaleFactor = min(60.0 / (maxLat - minLat), 60.0 / (maxLon - minLon))
-topLeftLat = maxLat + padding / scaleFactor
-topLeftLon = minLat - padding / scaleFactor
-botRightLat = minLat - padding / scaleFactor
-botRightLon = maxLon + padding /scaleFactor
-print("Top Left: " + str(topLeftLat) + ", " + str(topLeftLon))
-print("Bottom Right: " + str(botRightLat) + ", " + str(botRightLon))
+botLeftLat = minLat - padding / scaleFactor
+botLeftLon = minLon - padding / scaleFactor
+topRightLat = botLeftLat + 60.0 / scaleFactor
+topRightLon = botLeftLon + 60.0 / scaleFactor
+print("Bottom Left: " + str(botLeftLat) + ", " + str(botLeftLon))
+print("Top Right: " + str(topRightLat) + ", " + str(topRightLon))
 
 for i in range(len(stationData)):
     stationData[i][0] = (stationData[i][0] - minLon) * scaleFactor + padding

@@ -1,78 +1,89 @@
 breed [french-corps a-french-corps]
 
-french-corps-own [supply current-junction]
+french-corps-own [units current-junction speed]
 
-globals[destruction]
+globals [destruction]
 
 to setup-french
   let start-junction one-of junctions with [label = "Mons"]
   set-default-shape french-corps "circle"
   
-  create-french-corps 1 [
+  create-french-corps 6 [
     setxy [xcor] of start-junction [ycor] of start-junction
-    set supply 100
     set current-junction start-junction
     set color blue
-    set size 2
+    set size 1
+    set speed allied-speed * map-scale * time-scale
+    set units 100
   ]
-  
   
   set destruction 0
 end
 
 to step-french
-  ifelse  destruction > french-destruction-capacity   
-  [retreat-french] 
-  [destroy-french]
-end
-
-to retreat-french
-  nw:set-context junctions roads
   ask french-corps [
-    ;let current-junction-label [label] of current-junction
-    ;let my-current-station one-of stations with [label = current-junction-label]
-    ;if (my-current-station != nobody) [
-    ;  ask my-current-station [ask my-out-tracks [set color white]]
-    ;]
-
-    let shortest-path (list current-junction)
-    ask current-junction [
-      set shortest-path nw:turtles-on-path-to one-of junctions with [label = "Meaux"]
+    if-else destruction >= destruction-capacity or
+    count german-corps in-radius retreat-distance * map-scale > 0 [
+      french-retreat self
+    ][
+      french-plunder self
     ]
-    let next-junction item 1 shortest-path
-    move-to next-junction
-    set current-junction next-junction
   ]
-  print "retreat"
-  
 end
 
-to destroy-french
+to french-retreat [my-french-corps]
+  move-french my-french-corps one-of junctions with [label = "Paris"]
+end
+
+to french-plunder [my-french-corps]
   nw:set-context junctions roads
-  ask french-corps [
-    let current-junction-label [label] of current-junction
-    let my-current-station one-of stations with [label = current-junction-label]
-    
-    let minLink nobody
-    
-    if my-current-station != nobody [
-      ask my-current-station [
-        set minLink min-one-of my-out-tracks with [health > french-track-damage-threshold] [weight]
+  ask my-french-corps [
+    if distance current-junction <= speed [
+      move-to current-junction
+      let current-junction-label [label] of current-junction
+      let my-current-station one-of stations with [label = current-junction-label]
+      
+      if-else my-current-station != nobody [
+        let min-link nobody
+        
+        if my-current-station != nobody [
+          ask my-current-station [
+            set min-link min-one-of my-out-tracks with [health > track-damage-threshold] [weight]
+          ]
+        ]
+        
+        if (min-link != nobody) [
+          set destruction destruction + track-damage * time-scale
+          ask min-link [set health health - track-damage * time-scale]
+        ]
+      ][
+        let paris-junction one-of junctions with [label = "Paris"]
+        let dist-paris distance paris-junction
+        let dest-junction item 0 sort-by [
+          [junction1 junction2] -> distance junction1 < distance junction2
+        ] junctions with [distance paris-junction <= dist-paris]
+        move-french self dest-junction
       ]
     ]
-    
-    if (minLink != nobody) [
-      print french-track-damage-threshold
-      ask my-current-station [ask minLink [set color white]]
-    ]
-
-    let shortest-path (list current-junction)
-    ask current-junction [
-      set shortest-path nw:turtles-on-path-to one-of junctions with [label = "Meaux"]
-    ]
-    let next-junction item 1 shortest-path
-    move-to next-junction
-    set current-junction next-junction
   ]
-  print "destroy"
+end
+
+to move-french [my-french-corps dest-junction]
+  ask my-french-corps [
+    if-else distance current-junction <= speed [
+      move-to current-junction
+      let shortest-path (list current-junction)
+      ask current-junction [
+        nw:set-context junctions roads
+        set shortest-path nw:turtles-on-weighted-path-to dest-junction weight
+      ]
+      let next-junction item 0 shortest-path
+      if length shortest-path > 1 [set next-junction item 1 shortest-path]
+      face next-junction
+      set current-junction next-junction
+    ][
+      set speed allied-speed * map-scale * time-scale
+      forward speed * random-float 1
+    ]
+  ]
 end

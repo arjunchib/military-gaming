@@ -1,19 +1,24 @@
 breed [german-corps a-german-corps]
 
-german-corps-own [supply current-junction]
+german-corps-own [supply current-junction speed]
+
+globals [attack-radius]
 
 to setup-germans
+  set attack-radius 0
+  
   set-default-shape german-corps "square"
   
   let start-junction one-of junctions with [label = "Brussels"]
   
-  create-german-corps 1 
+  create-german-corps 6
   [
     setxy [xcor] of start-junction [ycor] of start-junction
     set supply 100
     set current-junction start-junction
     set color yellow
-    set size 2
+    set size 1
+    set speed german-speed * time-scale * map-scale
   ]
 end
 
@@ -25,22 +30,23 @@ end
 ;; dest_label: label of the destination
 ;; This proc moves the German corps along the shortest path between the 
 ;; current location of the German corps and the destination
-to move-german-corps [ dest-junction ]
-  nw:set-context junctions roads
-  let my-current-junction [current-junction] of one-of german-corps
-  if my-current-junction != dest-junction [
-    ;show my-current-junction
-    let shortest-path (list my-current-junction)
-    ask my-current-junction 
-    [
-      set shortest-path nw:turtles-on-path-to dest-junction
-    ]
-    ;show shortest-path
-    let next-junction item 1 shortest-path
-    ask german-corps
-    [
-      move-to next-junction
+to move-german-corps [my-german-corps dest-junction]
+  ask my-german-corps [
+    nw:set-context junctions roads
+    if-else distance current-junction <= speed [
+      move-to current-junction
+      let shortest-path (list current-junction)
+      ask current-junction 
+      [
+        set shortest-path nw:turtles-on-weighted-path-to dest-junction weight
+      ]
+      let next-junction item 0 shortest-path
+      if length shortest-path > 1 [set next-junction item 1 shortest-path]
+      face next-junction
       set current-junction next-junction
+    ][
+      set speed german-speed * time-scale * map-scale
+      forward speed * random-float 1
     ]
   ]
 end
@@ -52,8 +58,11 @@ end
 to check-french-corps
   ask german-corps 
   [ 
+    ;; Lose supply
+    ask german-corps [if supply > 0 [set supply supply - supply-decay * time-scale ]]
+    
     ;; Only pursue/attack french-corps if they're alive
-    ifelse any? french-corps in-radius pursue-radius and [size] of one-of french-corps > 0
+    ifelse any? french-corps in-radius pursue-distance
     [
       ;; If in attack-rad => attack
       ifelse any? french-corps in-radius attack-radius
@@ -67,7 +76,7 @@ to check-french-corps
     ]
     [ 
       ;print "Not near French-corps or French-corps are all dead; Moving towards Meaux"
-      move-german-corps one-of junctions with [label = "Meaux"]
+      move-german-corps self one-of junctions with [label = "Meaux"]
     ]
   ]
 end
@@ -76,7 +85,7 @@ to pursue-french-corps
   ;print "Pursuing French-corps" 
   
   ;; Follow French's movement direction
-  move-german-corps [current-junction] of one-of french-corps
+  move-german-corps self [current-junction] of min-one-of french-corps [distance myself]
 end
 
 to attack-french-corps
@@ -85,29 +94,25 @@ to attack-french-corps
   
   ;; Fight
   ;; For now just decrease the size of french-corps
-  ask french-corps [
-    set size size - 1
-    if size <= 0 [die]
+  ask one-of french-corps in-radius attack-radius [
+    set units units - 1
+    if units <= 0 [die]
   ]
-  
-  ;; Lose supply
-  ask german-corps [ set supply supply - supply-decay ]
 end
 
 to supply-german-corps
-  let station-modifier station-resupply * (1 / (station-damage + 1.0)) + random-float 5 - 2.5
-  
-  ;; ONLY lose supply (-supply-decay) during battle!!
   ask german-corps [
     ;; For now , just make it indirectly proportional:
-    let my-dist distance railhead
-    let my-modifier 1
+    let dist-railhead distance railhead
     
-    ;; if current distance to rail head is less than min require => get 1 == max supply
-    ;; otherwise, it'll be min-dist-for-max-supply/my-dist
-    if my-dist > min-dist-for-max-supply
-    [ set my-modifier min-dist-for-max-supply / my-dist ]
+    let supply-gain number-supply-companies * dist-railhead / (supply-company-speed * time-scale * map-scale) / 2 * supply-company-capacity
+    ask railhead [
+      if supply < supply-gain [
+        set supply-gain supply
+      ]
+      set supply supply - supply-gain
+    ]
     
-    set supply supply + my-modifier * my-modifier
+    set supply supply + supply-gain
   ]
 end

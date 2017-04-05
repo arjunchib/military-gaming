@@ -1,9 +1,14 @@
-__includes["german.nls" "french.nls" "infrastructure.nls"]
+__includes["infrastructure.nls" "german.nls" "french.nls"]
 
 extensions [csv nw]
 
+globals [map-scale time-scale]
+
 to setup
   clear-all
+  ;import-drawing "map.png"
+  set map-scale 1 / 4.53125
+  set time-scale 1 / 24
   setup-infrastructure
   setup-germans
   setup-french
@@ -19,10 +24,10 @@ to step
 end
 @#$#@#$#@
 GRAPHICS-WINDOW
-413
-10
-1266
-552
+535
+15
+1388
+557
 -1
 -1
 13.0
@@ -42,14 +47,14 @@ GRAPHICS-WINDOW
 1
 1
 1
-ticks
+hours
 30.0
 
 BUTTON
-7
 10
-73
-43
+15
+76
+48
 NIL
 setup
 NIL
@@ -63,10 +68,10 @@ NIL
 1
 
 BUTTON
-80
-11
-143
-44
+85
+15
+148
+48
 NIL
 step
 NIL
@@ -80,56 +85,41 @@ NIL
 1
 
 SLIDER
-8
-364
+255
+190
+500
 223
-397
 supply-decay
 supply-decay
 0
 100
-11.0
+1.0
 1
 1
-NIL
+per day
 HORIZONTAL
 
 SLIDER
-8
-401
-224
-434
-station-damage
-station-damage
+255
+85
+500
+118
+number-supply-companies
+number-supply-companies
 0
-100
-0.0
+15
+5.0
 1
 1
-NIL
-HORIZONTAL
-
-SLIDER
-10
-219
-220
-252
-station-resupply
-station-resupply
-0
-100
-8.0
-1
-1
-NIL
+per corps
 HORIZONTAL
 
 PLOT
-7
-52
-297
-213
-German Corps' Supply
+255
+300
+500
+462
+German Supply
 NIL
 NIL
 0.0
@@ -143,85 +133,55 @@ PENS
 "default" 1.0 0 -16777216 true "" "plot [supply] of one-of -germancorps"
 
 SLIDER
-7
-529
-225
-562
-french-retreat-distance
-french-retreat-distance
+10
+190
+230
+223
+retreat-distance
+retreat-distance
 0
 20
-10.0
+5.0
 1
 1
-NIL
+km
 HORIZONTAL
 
 SLIDER
-7
-567
-225
-600
-french-destruction-capacity
-french-destruction-capacity
+10
+155
+230
+188
+destruction-capacity
+destruction-capacity
 0
 1700
-500.0
+700.0
 100
 1
 NIL
 HORIZONTAL
 
 SLIDER
-7
-605
+255
 225
-638
-french-attrition
-french-attrition
+500
+258
+pursue-distance
+pursue-distance
 0
-100
-50.0
+20
+1.0
 1
 1
-NIL
-HORIZONTAL
-
-SLIDER
-9
-291
-221
-324
-attack-radius
-attack-radius
-0
-5
-0.0
-1
-1
-NIL
-HORIZONTAL
-
-SLIDER
-9
-328
-222
-361
-pursue-radius
-pursue-radius
-0
-10
-0.0
-1
-1
-NIL
+km
 HORIZONTAL
 
 BUTTON
-147
-11
-210
-44
+155
+15
+218
+48
 go
 step
 T
@@ -235,49 +195,194 @@ NIL
 1
 
 SLIDER
-7
-456
-224
-489
-french-track-damage
-french-track-damage
+10
+85
+230
+118
+track-damage
+track-damage
 0
 100
-30.0
+20.0
+1
+1
+per day
+HORIZONTAL
+
+SLIDER
+255
+120
+500
+153
+supply-company-speed
+supply-company-speed
+0
+60
+40.0
+5
+1
+km / day
+HORIZONTAL
+
+TEXTBOX
+12
+452
+162
+470
+Trains
+11
+0.0
+1
+
+SLIDER
 10
+470
+230
+503
+train-speed
+train-speed
+0
+200
+150.0
+5
+1
+km / day
+HORIZONTAL
+
+SLIDER
+10
+505
+230
+538
+train-capacity
+train-capacity
+0
+200
+90.0
+5
 1
 NIL
 HORIZONTAL
 
+TEXTBOX
+15
+65
+165
+83
+Allies
+11
+0.0
+1
+
+TEXTBOX
+275
+60
+425
+78
+German
+11
+0.0
+1
+
 SLIDER
-7
-492
-225
-525
-french-track-damage-threshold
-french-track-damage-threshold
+10
+120
+230
+153
+track-damage-threshold
+track-damage-threshold
 0
 100
 10.0
-10
+5
 1
 NIL
 HORIZONTAL
 
 SLIDER
 10
-255
-220
-288
-min-dist-for-max-supply
-min-dist-for-max-supply
+225
+230
+258
+allied-speed
+allied-speed
 0
-10
-0.0
+60
+50.0
+5
 1
+km / day
+HORIZONTAL
+
+SLIDER
+255
+155
+500
+188
+supply-company-capacity
+supply-company-capacity
+0
+100
+35.0
+5
 1
 NIL
 HORIZONTAL
+
+SLIDER
+255
+260
+500
+293
+german-speed
+german-speed
+0
+60
+40.0
+5
+1
+km /day
+HORIZONTAL
+
+PLOT
+10
+265
+230
+426
+Allied Destruction
+NIL
+NIL
+0.0
+2000.0
+0.0
+10.0
+true
+false
+"" "plot description"
+PENS
+"default" 1.0 0 -16777216 true "" "plot destruction"
+
+MONITOR
+255
+470
+500
+515
+distance from railhead
+round german-dist-from-station railhead
+17
+1
+11
+
+MONITOR
+445
+15
+502
+60
+days
+round (ticks * time-scale)
+17
+1
+11
 
 @#$#@#$#@
 ## WHAT IS IT?
@@ -650,7 +755,7 @@ false
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 @#$#@#$#@
-NetLogo 6.0
+NetLogo 6.0.1
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@
@@ -689,5 +794,5 @@ true
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
 @#$#@#$#@
-0
+1
 @#$#@#$#@

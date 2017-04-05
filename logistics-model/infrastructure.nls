@@ -1,13 +1,14 @@
 globals [railhead source]
 
-breed [trains train]
 breed [stations station]
 undirected-link-breed [tracks track]
 breed [junctions junction]
 undirected-link-breed [roads road]
+breed [trains train]
 
 trains-own [current-station previous-station speed supply capacity]
 tracks-own [health weight]
+roads-own [weight]
 stations-own [supply]
 
 to setup-infrastructure
@@ -23,6 +24,7 @@ end
 to step-infrastructure
   update-tracks
   update-trains
+  update-railhead
 end
 
 to setup-junctions
@@ -48,7 +50,10 @@ to setup-roads
     let t item 1 data
     ask junctions with [label = s] [create-roads-with junctions with [label = t]]
   ]
-  ask roads [set color white]
+  ask roads [
+    set color white
+    set weight link-length
+  ]
 end
 
 to setup-stations
@@ -63,7 +68,7 @@ to setup-stations
     ]
   ]
   ask stations [
-    set color 55
+    set color green
     set size 1.5
   ]
 end
@@ -91,12 +96,12 @@ to setup-trains
   
   let start-station one-of stations with [label = "Aix-la-Chapelle"]
   
-  create-trains 1
+  create-trains 6
   [
     setxy [xcor] of start-station [ycor] of start-station
-    set supply 100
-    set capacity 100
-    set speed 1 ;; distance / hour
+    set supply 0
+    set capacity train-capacity
+    set speed train-speed * map-scale * time-scale
     set current-station start-station
     set color yellow
     set size 2
@@ -105,8 +110,7 @@ end
 
 to update-trains
   ask trains [
-    let at-station? distance current-station <= speed
-    if-else at-station? [
+    if-else distance current-station <= speed [
       move-to current-station
       let in-transfer? false
       if current-station = railhead and supply > 0 [
@@ -136,8 +140,9 @@ to update-trains
         set current-station next-station
       ]
     ][
-      forward speed
-      ask track [who] of previous-station [who] of current-station [set health health - 1]
+      set speed train-speed * map-scale * time-scale
+      let current-track track [who] of previous-station [who] of current-station
+      forward speed * random-float 1 * [health] of current-track / 100
     ]
   ]
 end
@@ -174,4 +179,18 @@ to update-tracks
     ]
     set color c
   ]
+end
+
+to update-railhead
+  set railhead item 0 sort-by [[s1 s2] -> german-dist-from-station s1 < german-dist-from-station s2] stations
+  ask stations [set color green]
+  ask railhead [set color red]
+end
+
+to-report german-dist-from-station [my-station]
+  let total-dist 0
+  ask german-corps [
+    set total-dist total-dist + distance my-station
+  ]
+  report total-dist
 end
