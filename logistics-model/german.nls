@@ -99,8 +99,15 @@ to supply-german-corps
   
   ;; ONLY lose supply (-supply-decay) during battle!!
   ask german-corps [
-    print "distance to railhead:" 
-    print  distance railhead
-    set supply supply + station-modifier 
+    ;; For now , just make it indirectly proportional:
+    let my-dist distance railhead
+    let my-modifier 1
+    
+    ;; if current distance to rail head is less than min require => get 1 == max supply
+    ;; otherwise, it'll be min-dist-for-max-supply/my-dist
+    if my-dist > min-dist-for-max-supply
+    [ set my-modifier min-dist-for-max-supply / my-dist ]
+    
+    set supply supply + my-modifier * my-modifier
   ]
 end
