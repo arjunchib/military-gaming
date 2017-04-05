@@ -1,6 +1,6 @@
 breed [german-corps a-german-corps]
 
-german-corps-own [supply current-junction]
+german-corps-own [supply current-junction previous-junction]
 
 to setup-germans
   set-default-shape german-corps "square"
@@ -29,13 +29,11 @@ to move-german-corps [ dest-junction ]
   nw:set-context junctions roads
   let my-current-junction [current-junction] of one-of german-corps
   if my-current-junction != dest-junction [
-    show my-current-junction
     let shortest-path (list my-current-junction)
     ask my-current-junction 
     [
       set shortest-path nw:turtles-on-path-to dest-junction
     ]
-    show shortest-path
     let next-junction item 1 shortest-path
     ask german-corps
     [
