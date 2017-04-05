@@ -1,11 +1,8 @@
 breed [german-corps a-german-corps]
 
-german-corps-own [supply current-junction speed]
-
-globals [attack-radius]
+german-corps-own [supply capacity current-junction speed units attrition]
 
 to setup-germans
-  set attack-radius 0
   
   set-default-shape german-corps "square"
   
@@ -19,6 +16,8 @@ to setup-germans
     set color yellow
     set size 1
     set speed german-speed * time-scale * map-scale
+    set units german-num-units
+    set capacity german-supply-capacity
   ]
 end
 
@@ -46,7 +45,7 @@ to move-german-corps [my-german-corps dest-junction]
       set current-junction next-junction
     ][
       set speed german-speed * time-scale * map-scale
-      forward speed * random-float 1
+      forward speed * (random-float 0.5 + 0.75)
     ]
   ]
 end
@@ -58,25 +57,24 @@ end
 to check-french-corps
   ask german-corps 
   [ 
-    ;; Lose supply
-    ask german-corps [if supply > 0 [set supply supply - supply-decay * time-scale ]]
-    
     ;; Only pursue/attack french-corps if they're alive
-    ifelse any? french-corps in-radius pursue-distance
-    [
-      ;; If in attack-rad => attack
-      ifelse any? french-corps in-radius attack-radius
-      [ 
-        attack-french-corps 
+    if supply > 20 [
+      ifelse any? french-corps in-radius pursue-distance
+      [
+        ;; If in attack-rad => attack
+        ifelse any? french-corps in-radius 0.5
+        [ 
+          attack-french-corps 
+        ]
+        ;; Else, keep moving toward
+        [ 
+          pursue-french-corps
+        ]
       ]
-      ;; Else, keep moving toward
       [ 
-        pursue-french-corps
+        ;print "Not near French-corps or French-corps are all dead; Moving towards Meaux"
+        move-german-corps self one-of junctions with [label = "Meaux"]
       ]
-    ]
-    [ 
-      ;print "Not near French-corps or French-corps are all dead; Moving towards Meaux"
-      move-german-corps self one-of junctions with [label = "Meaux"]
     ]
   ]
 end
@@ -94,10 +92,20 @@ to attack-french-corps
   
   ;; Fight
   ;; For now just decrease the size of french-corps
-  ask one-of french-corps in-radius attack-radius [
-    set units units - 1
+  set attrition german-attrition
+  let damage-given attrition * units * (random-float 0.5 + 0.75)
+  let damage-taken 0
+  ask one-of french-corps in-radius 0.5 [
+    set plunder 0
+    set attrition allied-attrition
+    set damage-taken attrition * units * (random-float 0.5 + 0.75)
+    set units units - damage-given
     if units <= 0 [die]
   ]
+  set units units - damage-taken
+  
+  ;; Lose supply
+    ask german-corps [if supply > 0 [set supply supply - supply-decay * time-scale ]]
 end
 
 to supply-german-corps
@@ -106,13 +114,17 @@ to supply-german-corps
     let dist-railhead distance railhead
     
     let supply-gain number-supply-companies * dist-railhead / (supply-company-speed * time-scale * map-scale) / 2 * supply-company-capacity
+    if dist-railhead = 0 [set supply-gain number-supply-companies * supply-company-capacity]
     ask railhead [
       if supply < supply-gain [
         set supply-gain supply
       ]
       set supply supply - supply-gain
     ]
-    
-    set supply supply + supply-gain
+    if-else supply + supply-gain >= capacity [
+      set supply capacity
+    ][
+      set supply supply + supply-gain
+    ]
   ]
 end

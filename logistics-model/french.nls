@@ -1,11 +1,11 @@
 breed [french-corps a-french-corps]
 
-french-corps-own [units current-junction speed]
+french-corps-own [units current-junction speed attrition loss-threshold plunder]
 
 globals [destruction]
 
 to setup-french
-  let start-junction one-of junctions with [label = "Mons"]
+  let start-junction one-of junctions with [label = "Cambrai"]
   set-default-shape french-corps "circle"
   
   create-french-corps 6 [
@@ -14,7 +14,9 @@ to setup-french
     set color blue
     set size 1
     set speed allied-speed * map-scale * time-scale
-    set units 100
+    set units allied-num-units
+    set loss-threshold allied-num-units - allied-loss-threshold
+    set plunder track-damage
   ]
   
   set destruction 0
@@ -23,7 +25,8 @@ end
 to step-french
   ask french-corps [
     if-else destruction >= destruction-capacity or
-    count german-corps in-radius retreat-distance * map-scale > 0 [
+    count german-corps in-radius retreat-distance * map-scale > 0 or
+    units < loss-threshold [
       french-retreat self
     ][
       french-plunder self
@@ -32,6 +35,11 @@ to step-french
 end
 
 to french-retreat [my-french-corps]
+  let retreat-radius min (list 2.0 retreat-distance)
+  if count german-corps in-radius retreat-radius = 0 [
+    ;set loss-threshold units - allied-loss-threshold
+    set plunder track-damage
+  ]
   move-french my-french-corps one-of junctions with [label = "Paris"]
 end
 
@@ -53,8 +61,9 @@ to french-plunder [my-french-corps]
         ]
         
         if (min-link != nobody) [
-          set destruction destruction + track-damage * time-scale
-          ask min-link [set health health - track-damage * time-scale]
+          let damage-given plunder * time-scale
+          set destruction destruction + damage-given
+          ask min-link [set health health - damage-given]
         ]
       ][
         let paris-junction one-of junctions with [label = "Paris"]
@@ -83,7 +92,7 @@ to move-french [my-french-corps dest-junction]
       set current-junction next-junction
     ][
       set speed allied-speed * map-scale * time-scale
-      forward speed * random-float 1
+      forward speed * (random-float 0.5 + 0.75)
     ]
   ]
 end

@@ -93,8 +93,8 @@ supply-decay
 supply-decay
 0
 100
-1.0
-1
+20.0
+5
 1
 per day
 HORIZONTAL
@@ -116,9 +116,9 @@ HORIZONTAL
 
 PLOT
 255
-300
+410
 500
-462
+572
 German Supply
 NIL
 NIL
@@ -128,20 +128,20 @@ NIL
 10.0
 true
 false
-"" "plot [supply] of one-of german-corps"
+"" "let total-supply 0\nask german-corps [set total-supply total-supply + supply]\nplot total-supply"
 PENS
-"default" 1.0 0 -16777216 true "" "plot [supply] of one-of -germancorps"
+"default" 1.0 0 -16777216 true "" "let total-supply 0"
 
 SLIDER
 10
-190
+225
 230
-223
+258
 retreat-distance
 retreat-distance
 0
 20
-5.0
+0.0
 1
 1
 km
@@ -203,8 +203,8 @@ track-damage
 track-damage
 0
 100
-20.0
-1
+50.0
+5
 1
 per day
 HORIZONTAL
@@ -225,20 +225,20 @@ km / day
 HORIZONTAL
 
 TEXTBOX
-12
-452
-162
-470
+10
+545
+160
+563
 Trains
 11
 0.0
 1
 
 SLIDER
-10
-470
-230
-503
+8
+563
+228
+596
 train-speed
 train-speed
 0
@@ -250,10 +250,10 @@ km / day
 HORIZONTAL
 
 SLIDER
-10
-505
-230
-538
+8
+598
+228
+631
 train-capacity
 train-capacity
 0
@@ -275,10 +275,10 @@ Allies
 1
 
 TEXTBOX
-275
-60
-425
-78
+260
+65
+410
+83
 German
 11
 0.0
@@ -301,14 +301,14 @@ HORIZONTAL
 
 SLIDER
 10
-225
+260
 230
-258
+293
 allied-speed
 allied-speed
 0
 60
-50.0
+40.0
 5
 1
 km / day
@@ -346,27 +346,27 @@ HORIZONTAL
 
 PLOT
 10
-265
+375
 230
-426
-Allied Destruction
+536
+Total Allied Units
 NIL
 NIL
-0.0
-2000.0
 0.0
 10.0
+0.0
+100000.0
 true
 false
-"" "plot description"
+"" "let total-units 0\nask french-corps [set total-units total-units + units]\nplot total-units"
 PENS
-"default" 1.0 0 -16777216 true "" "plot destruction"
+"default" 1.0 0 -16777216 true "" "let total-units 0"
 
 MONITOR
 255
-470
-500
-515
+15
+440
+60
 distance from railhead
 round german-dist-from-station railhead
 17
@@ -383,6 +383,111 @@ round (ticks * time-scale)
 17
 1
 11
+
+SLIDER
+255
+295
+500
+328
+german-num-units
+german-num-units
+0
+100000
+40000.0
+5000
+1
+per corps
+HORIZONTAL
+
+SLIDER
+255
+330
+500
+363
+german-attrition
+german-attrition
+0
+1
+0.039
+0.001
+1
+kills per hour
+HORIZONTAL
+
+SLIDER
+10
+190
+230
+223
+allied-loss-threshold
+allied-loss-threshold
+0
+10000
+3000.0
+1000
+1
+per corps
+HORIZONTAL
+
+SLIDER
+10
+295
+230
+328
+allied-num-units
+allied-num-units
+0
+100000
+30000.0
+5000
+1
+per corps
+HORIZONTAL
+
+SLIDER
+10
+330
+230
+363
+allied-attrition
+allied-attrition
+0
+1
+0.0394
+0.0001
+1
+kills per hour
+HORIZONTAL
+
+SLIDER
+255
+365
+500
+398
+german-supply-capacity
+german-supply-capacity
+0
+100
+100.0
+1
+1
+NIL
+HORIZONTAL
+
+SLIDER
+7
+635
+227
+668
+train-repair
+train-repair
+0
+100
+50.0
+5
+1
+per day
+HORIZONTAL
 
 @#$#@#$#@
 ## WHAT IS IT?

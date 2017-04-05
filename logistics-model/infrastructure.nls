@@ -87,6 +87,7 @@ to setup-tracks
     ask tracks [
       set health 100
       set color health5
+      set weight link-length
     ]
   ]
 end
@@ -132,7 +133,7 @@ to update-trains
         let shortest-path (list current-station)
         ask current-station [
           nw:set-context stations tracks
-          set shortest-path nw:turtles-on-path-to dest-station
+          set shortest-path nw:turtles-on-weighted-path-to dest-station weight
         ]
         let next-station item 1 shortest-path
         face next-station
@@ -184,7 +185,20 @@ end
 to update-railhead
   set railhead item 0 sort-by [[s1 s2] -> german-dist-from-station s1 < german-dist-from-station s2] stations
   ask stations [set color green]
-  ask railhead [set color red]
+  ask railhead [
+    set color red
+    nw:set-context stations tracks
+    let shortest-path nw:weighted-path-to one-of stations with [label = "Aix-la-Chapelle"] weight
+    let my-tracks link-set shortest-path
+    ask min-one-of my-tracks [health] [
+      let repair-ammount train-repair * time-scale
+      if-else repair-ammount + health > 100 [
+        set health 100
+      ][
+        set health health + repair-ammount
+      ]
+    ]
+  ]
 end
 
 to-report german-dist-from-station [my-station]
