@@ -29,13 +29,13 @@ to move-german-corps [ dest-junction ]
   nw:set-context junctions roads
   let my-current-junction [current-junction] of one-of german-corps
   if my-current-junction != dest-junction [
-    show my-current-junction
+    ;show my-current-junction
     let shortest-path (list my-current-junction)
     ask my-current-junction 
     [
       set shortest-path nw:turtles-on-path-to dest-junction
     ]
-    show shortest-path
+    ;show shortest-path
     let next-junction item 1 shortest-path
     ask german-corps
     [

@@ -19,10 +19,10 @@ to step
 end
 @#$#@#$#@
 GRAPHICS-WINDOW
-252
-21
-1105
-563
+308
+10
+1161
+552
 -1
 -1
 13.0
@@ -46,10 +46,10 @@ ticks
 30.0
 
 BUTTON
-15
-33
-81
-66
+7
+10
+73
+43
 NIL
 setup
 NIL
@@ -63,10 +63,10 @@ NIL
 1
 
 BUTTON
-101
-35
-164
-68
+80
+11
+143
+44
 NIL
 step
 NIL
@@ -80,10 +80,10 @@ NIL
 1
 
 SLIDER
-17
-97
-189
-130
+22
+51
+194
+84
 supply-decay
 supply-decay
 0
@@ -96,9 +96,9 @@ HORIZONTAL
 
 SLIDER
 21
-147
+88
 193
-180
+121
 station-damage
 station-damage
 0
@@ -110,10 +110,10 @@ NIL
 HORIZONTAL
 
 SLIDER
-17
-199
-189
-232
+20
+124
+192
+157
 station-resupply
 station-resupply
 0
@@ -125,10 +125,10 @@ NIL
 HORIZONTAL
 
 PLOT
-17
-305
-217
-455
+14
+177
+214
+327
 German Corps' Supply
 NIL
 NIL
@@ -196,7 +196,7 @@ attack-radius
 attack-radius
 0
 5
-4.0
+0.0
 1
 1
 NIL
@@ -218,10 +218,10 @@ NIL
 HORIZONTAL
 
 BUTTON
-178
-39
-241
-72
+147
+11
+210
+44
 go
 step
 T
@@ -233,6 +233,36 @@ G
 NIL
 NIL
 1
+
+SLIDER
+23
+380
+210
+413
+french-track-damage
+french-track-damage
+0
+100
+10.0
+10
+1
+NIL
+HORIZONTAL
+
+SLIDER
+12
+419
+274
+452
+french-track-damage-threshold
+french-track-damage-threshold
+0
+100
+30.0
+10
+1
+NIL
+HORIZONTAL
 
 @#$#@#$#@
 ## WHAT IS IT?

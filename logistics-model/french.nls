@@ -21,12 +21,29 @@ to setup-french
 end
 
 to step-french
-  ifelse  destruction > french-destruction-capacity  
+  ifelse  destruction > french-destruction-capacity   
   [retreat-french] 
   [destroy-french]
 end
 
 to retreat-french
+  nw:set-context junctions roads
+  ask french-corps [
+    ;let current-junction-label [label] of current-junction
+    ;let my-current-station one-of stations with [label = current-junction-label]
+    ;if (my-current-station != nobody) [
+    ;  ask my-current-station [ask my-out-tracks [set color white]]
+    ;]
+
+    let shortest-path (list current-junction)
+    ask current-junction [
+      set shortest-path nw:turtles-on-path-to one-of junctions with [label = "Meaux"]
+    ]
+    let next-junction item 1 shortest-path
+    move-to next-junction
+    set current-junction next-junction
+  ]
+  print "retreat"
   
 end
 
@@ -35,8 +52,18 @@ to destroy-french
   ask french-corps [
     let current-junction-label [label] of current-junction
     let my-current-station one-of stations with [label = current-junction-label]
-    if (my-current-station != nobody) [
-      ask my-current-station [ask my-out-tracks [set color white]]
+    
+    let minLink nobody
+    
+    if my-current-station != nobody [
+      ask my-current-station [
+        set minLink min-one-of my-out-tracks with [health > french-track-damage-threshold] [weight]
+      ]
+    ]
+    
+    if (minLink != nobody) [
+      print french-track-damage-threshold
+      ask my-current-station [ask minLink [set color white]]
     ]
 
     let shortest-path (list current-junction)
@@ -47,5 +74,5 @@ to destroy-french
     move-to next-junction
     set current-junction next-junction
   ]
-  
+  print "destroy"
 end
