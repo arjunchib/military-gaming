@@ -19,9 +19,9 @@ to step
 end
 @#$#@#$#@
 GRAPHICS-WINDOW
-308
+413
 10
-1161
+1266
 552
 -1
 -1
@@ -80,10 +80,10 @@ NIL
 1
 
 SLIDER
-6
-293
-178
-326
+8
+364
+223
+397
 supply-decay
 supply-decay
 0
@@ -95,10 +95,10 @@ NIL
 HORIZONTAL
 
 SLIDER
-5
-329
-177
-362
+8
+401
+224
+434
 station-damage
 station-damage
 0
@@ -110,10 +110,10 @@ NIL
 HORIZONTAL
 
 SLIDER
-7
-222
-179
-255
+10
+219
+220
+252
 station-resupply
 station-resupply
 0
@@ -143,10 +143,10 @@ PENS
 "default" 1.0 0 -16777216 true "" "plot [supply] of one-of -germancorps"
 
 SLIDER
-24
-496
-225
+7
 529
+225
+562
 french-retreat-distance
 french-retreat-distance
 0
@@ -158,10 +158,10 @@ NIL
 HORIZONTAL
 
 SLIDER
-3
-535
-241
-568
+7
+567
+225
+600
 french-destruction-capacity
 french-destruction-capacity
 0
@@ -173,10 +173,10 @@ NIL
 HORIZONTAL
 
 SLIDER
-38
-573
-210
-606
+7
+605
+225
+638
 french-attrition
 french-attrition
 0
@@ -188,30 +188,30 @@ NIL
 HORIZONTAL
 
 SLIDER
-371
-559
-543
-592
+9
+291
+221
+324
 attack-radius
 attack-radius
 0
 5
-1.0
+0.0
 1
 1
 NIL
 HORIZONTAL
 
 SLIDER
-371
-596
-543
-629
+9
+328
+222
+361
 pursue-radius
 pursue-radius
 0
 10
-3.0
+0.0
 1
 1
 NIL
@@ -235,27 +235,12 @@ NIL
 1
 
 SLIDER
-23
-380
-210
-413
+7
+456
+224
+489
 french-track-damage
 french-track-damage
-0
-100
-10.0
-10
-1
-NIL
-HORIZONTAL
-
-SLIDER
-12
-419
-274
-452
-french-track-damage-threshold
-french-track-damage-threshold
 0
 100
 30.0
@@ -265,15 +250,30 @@ NIL
 HORIZONTAL
 
 SLIDER
-6
-258
-180
-291
+7
+492
+225
+525
+french-track-damage-threshold
+french-track-damage-threshold
+0
+100
+10.0
+10
+1
+NIL
+HORIZONTAL
+
+SLIDER
+10
+255
+220
+288
 min-dist-for-max-supply
 min-dist-for-max-supply
 0
 10
-10.0
+0.0
 1
 1
 NIL
