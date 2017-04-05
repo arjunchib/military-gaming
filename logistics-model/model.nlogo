@@ -19,10 +19,10 @@ to step
 end
 @#$#@#$#@
 GRAPHICS-WINDOW
-252
-21
-1105
-563
+413
+10
+1266
+552
 -1
 -1
 13.0
@@ -46,10 +46,10 @@ ticks
 30.0
 
 BUTTON
-15
-33
-81
-66
+7
+10
+73
+43
 NIL
 setup
 NIL
@@ -63,10 +63,10 @@ NIL
 1
 
 BUTTON
-101
-35
-164
-68
+80
+11
+143
+44
 NIL
 step
 NIL
@@ -80,25 +80,25 @@ NIL
 1
 
 SLIDER
-17
-97
-189
-130
+8
+364
+223
+397
 supply-decay
 supply-decay
 0
 100
-10.0
+11.0
 1
 1
 NIL
 HORIZONTAL
 
 SLIDER
-21
-147
-193
-180
+8
+401
+224
+434
 station-damage
 station-damage
 0
@@ -110,25 +110,25 @@ NIL
 HORIZONTAL
 
 SLIDER
-17
-199
-189
-232
+10
+219
+220
+252
 station-resupply
 station-resupply
 0
 100
-5.0
+8.0
 1
 1
 NIL
 HORIZONTAL
 
 PLOT
-17
-305
-217
-455
+7
+52
+297
+213
 German Corps' Supply
 NIL
 NIL
@@ -143,10 +143,10 @@ PENS
 "default" 1.0 0 -16777216 true "" "plot [supply] of one-of -germancorps"
 
 SLIDER
-24
-496
-225
+7
 529
+225
+562
 french-retreat-distance
 french-retreat-distance
 0
@@ -158,10 +158,10 @@ NIL
 HORIZONTAL
 
 SLIDER
-3
-535
-241
-568
+7
+567
+225
+600
 french-destruction-capacity
 french-destruction-capacity
 0
@@ -173,10 +173,10 @@ NIL
 HORIZONTAL
 
 SLIDER
-38
-573
-210
-606
+7
+605
+225
+638
 french-attrition
 french-attrition
 0
@@ -188,40 +188,40 @@ NIL
 HORIZONTAL
 
 SLIDER
-371
-576
-543
-609
+9
+291
+221
+324
 attack-radius
 attack-radius
 0
 5
-4.0
+0.0
 1
 1
 NIL
 HORIZONTAL
 
 SLIDER
-566
-578
-738
-611
+9
+328
+222
+361
 pursue-radius
 pursue-radius
 0
 10
-4.0
+0.0
 1
 1
 NIL
 HORIZONTAL
 
 BUTTON
-178
-39
-241
-72
+147
+11
+210
+44
 go
 step
 T
@@ -233,6 +233,51 @@ G
 NIL
 NIL
 1
+
+SLIDER
+7
+456
+224
+489
+french-track-damage
+french-track-damage
+0
+100
+30.0
+10
+1
+NIL
+HORIZONTAL
+
+SLIDER
+7
+492
+225
+525
+french-track-damage-threshold
+french-track-damage-threshold
+0
+100
+10.0
+10
+1
+NIL
+HORIZONTAL
+
+SLIDER
+10
+255
+220
+288
+min-dist-for-max-supply
+min-dist-for-max-supply
+0
+10
+0.0
+1
+1
+NIL
+HORIZONTAL
 
 @#$#@#$#@
 ## WHAT IS IT?
@@ -605,7 +650,7 @@ false
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 @#$#@#$#@
-NetLogo 6.0.1
+NetLogo 6.0
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@

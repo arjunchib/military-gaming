@@ -1,6 +1,6 @@
 breed [german-corps a-german-corps]
 
-german-corps-own [supply current-junction previous-junction]
+german-corps-own [supply current-junction]
 
 to setup-germans
   set-default-shape german-corps "square"
@@ -29,11 +29,13 @@ to move-german-corps [ dest-junction ]
   nw:set-context junctions roads
   let my-current-junction [current-junction] of one-of german-corps
   if my-current-junction != dest-junction [
+    ;show my-current-junction
     let shortest-path (list my-current-junction)
     ask my-current-junction 
     [
       set shortest-path nw:turtles-on-path-to dest-junction
     ]
+    ;show shortest-path
     let next-junction item 1 shortest-path
     ask german-corps
     [
@@ -64,14 +66,14 @@ to check-french-corps
       ]
     ]
     [ 
-      print "Not near French-corps or French-corps are all dead; Moving towards Meaux"
+      ;print "Not near French-corps or French-corps are all dead; Moving towards Meaux"
       move-german-corps one-of junctions with [label = "Meaux"]
     ]
   ]
 end
 
 to pursue-french-corps
-  print "Pursuing French-corps" 
+  ;print "Pursuing French-corps" 
   
   ;; Follow French's movement direction
   move-german-corps [current-junction] of one-of french-corps
@@ -79,7 +81,7 @@ end
 
 to attack-french-corps
   ;; Reduce french-corps size?
-  print "Attacking french-corps"
+  ;print "Attacking french-corps"
   
   ;; Fight
   ;; For now just decrease the size of french-corps
@@ -94,7 +96,18 @@ end
 
 to supply-german-corps
   let station-modifier station-resupply * (1 / (station-damage + 1.0)) + random-float 5 - 2.5
-
+  
   ;; ONLY lose supply (-supply-decay) during battle!!
-  ask german-corps [set supply supply + station-modifier ]
+  ask german-corps [
+    ;; For now , just make it indirectly proportional:
+    let my-dist distance railhead
+    let my-modifier 1
+    
+    ;; if current distance to rail head is less than min require => get 1 == max supply
+    ;; otherwise, it'll be min-dist-for-max-supply/my-dist
+    if my-dist > min-dist-for-max-supply
+    [ set my-modifier min-dist-for-max-supply / my-dist ]
+    
+    set supply supply + my-modifier * my-modifier
+  ]
 end

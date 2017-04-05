@@ -7,7 +7,7 @@ breed [junctions junction]
 undirected-link-breed [roads road]
 
 trains-own [current-station previous-station speed supply capacity]
-tracks-own [health]
+tracks-own [health weight]
 stations-own [supply]
 
 to setup-infrastructure
