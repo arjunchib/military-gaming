@@ -62,7 +62,7 @@ NIL
 T
 OBSERVER
 NIL
-I
+NIL
 NIL
 NIL
 1
@@ -79,7 +79,7 @@ NIL
 T
 OBSERVER
 NIL
-S
+NIL
 NIL
 NIL
 1
@@ -93,25 +93,10 @@ supply-decay
 supply-decay
 0
 100
-20.0
+30.0
 5
 1
 per day
-HORIZONTAL
-
-SLIDER
-255
-85
-500
-118
-number-supply-companies
-number-supply-companies
-0
-15
-5.0
-1
-1
-per corps
 HORIZONTAL
 
 PLOT
@@ -189,7 +174,7 @@ T
 T
 OBSERVER
 NIL
-G
+NIL
 NIL
 NIL
 1
@@ -214,14 +199,14 @@ SLIDER
 120
 500
 153
-supply-company-speed
-supply-company-speed
+motor-company-speed
+motor-company-speed
 0
 60
-60.0
+10.0
 5
 1
-km / day
+km/h
 HORIZONTAL
 
 TEXTBOX
@@ -242,11 +227,11 @@ SLIDER
 train-speed
 train-speed
 0
-200
-150.0
+30
+10.0
 5
 1
-km / day
+km/h
 HORIZONTAL
 
 SLIDER
@@ -312,21 +297,6 @@ allied-speed
 5
 1
 km / day
-HORIZONTAL
-
-SLIDER
-255
-155
-500
-188
-supply-company-capacity
-supply-company-capacity
-0
-100
-35.0
-5
-1
-NIL
 HORIZONTAL
 
 SLIDER
@@ -438,7 +408,7 @@ allied-num-units
 allied-num-units
 0
 100000
-30000.0
+40000.0
 5000
 1
 per corps
@@ -460,21 +430,6 @@ kills per hour
 HORIZONTAL
 
 SLIDER
-255
-365
-500
-398
-german-supply-capacity
-german-supply-capacity
-0
-100
-100.0
-1
-1
-NIL
-HORIZONTAL
-
-SLIDER
 7
 635
 227
@@ -487,6 +442,21 @@ train-repair
 5
 1
 per day
+HORIZONTAL
+
+SLIDER
+255
+155
+500
+188
+motor-transfer-rate
+motor-transfer-rate
+0
+54
+20.0
+5
+1
+tons / hour
 HORIZONTAL
 
 @#$#@#$#@

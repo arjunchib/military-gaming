@@ -1,8 +1,8 @@
 breed [german-corps a-german-corps]
-breed [supply-companys supply-company]
+breed [motor-companys motor-company]
 
 german-corps-own [supply capacity current-junction speed units attrition]
-supply-companys-own [supply capacity current-junction speed corps]
+motor-companys-own [supply capacity current-junction speed corps to-front?]
 
 to setup-germans
   
@@ -18,27 +18,24 @@ to setup-germans
     set size 1
     set speed german-speed * time-scale * map-scale
     set units german-num-units
-    set capacity german-supply-capacity
+    set capacity 150
   ]
   
-  let german-corps-list []
-  ask german-corps [ set german-corps-list lput self german-corps-list ] 
-  
-  foreach german-corps-list [ my-german-corps ->
-    create-supply-companys 0 [
-      setxy [xcor] of my-german-corps [ycor] of my-german-corps
-      set supply 0
-      set capacity 100
-      set current-junction start-junction
-      set speed supply-company-speed * time-scale * map-scale
-      set corps my-german-corps 
-    ]
+  create-motor-companys 9 [
+    setxy [xcor] of railhead [ycor] of railhead
+    set supply 54
+    set capacity 54
+    set current-junction one-of junctions with [label = [label] of railhead]
+    set speed motor-company-speed * map-scale
+    set to-front? true
+    set corps one-of german-corps
+    set color brown
   ]
 end
 
 to step-german
   check-french-corps
-  supply-german-corps-continous
+  supply-german-corps
 end
 
 ;; dest_label: label of the destination
@@ -123,67 +120,54 @@ to attack-french-corps
     ask german-corps [if supply > 0 [set supply supply - supply-decay * time-scale ]]
 end
 
-to supply-german-corps-continous
-  ask german-corps [
-    ;; For now , just make it indirectly proportional:
-    let dist-railhead distance railhead
-    
-    let supply-gain number-supply-companies * dist-railhead / (supply-company-speed * time-scale * map-scale) / 2 * supply-company-capacity
-    if dist-railhead = 0 [set supply-gain number-supply-companies * supply-company-capacity]
-    ask railhead [
-      if supply < supply-gain [
-        set supply-gain supply
-      ]
-      set supply supply - supply-gain
-    ]
-    if-else supply + supply-gain >= capacity [
-      set supply capacity
-    ][
-      set supply supply + supply-gain
-    ]
-  ]
-end
-
 to supply-german-corps
-  ask supply-companys [
-    
-    if current-junction = railhead and distance current-junction <= speed and supply < capacity [
-      move-to current-junction
-      set supply supply + 10
-      if supply >= capacity [
-        set supply capacity
-      ]
-    stop
-    ]
-    
-    if supply = 0 [
-      let railhead-label [label] of railhead
-      move-supply-company self one-of junctions with [label = railhead-label]
-      stop
-    ]
-    
-    if distance corps <= speed * 2 [
-      set supply supply - 10
-      ask corps [
-        set supply supply + 10
-        if supply >= capacity [
-          set supply capacity
+  ask motor-companys [
+    let dest-junction current-junction
+    if-else to-front? [
+      set dest-junction [current-junction] of corps
+      if distance corps <= speed [
+        let transfer motor-transfer-rate
+        if supply < motor-transfer-rate [
+          set transfer supply
+        ]
+        if [supply] of corps + transfer > [capacity] of corps [
+          set transfer [capacity] of corps - [supply] of corps
+        ]
+        ask corps [set supply supply + transfer] 
+        set supply supply - transfer
+        if supply <= 0 [
+          set to-front? false
+          set dest-junction railhead
+          set current-junction one-of junctions with [label = [label] of railhead]
         ]
       ]
-      if-else [supply] of corps = [capacity] of corps [
-        set supply 0
-      ][
-        move-supply-company self [current-junction] of corps
+    ][
+      if distance railhead <= speed [
+        set current-junction one-of junctions with [label = [label] of railhead]
+        let transfer motor-transfer-rate
+        if [supply] of railhead < motor-transfer-rate [
+          set transfer [supply] of railhead
+        ]
+        if supply + transfer > capacity [
+          set transfer capacity
+        ]
+        ask railhead [set supply supply - transfer] 
+        set supply supply + transfer
+        if supply >= capacity [
+          set to-front? true
+          set corps one-of german-corps
+          set dest-junction [current-junction] of corps
+          set current-junction [current-junction] of corps
+        ]
       ]
-      stop
     ]
-    
-    move-supply-company self [current-junction] of corps
+    move-motor-company self dest-junction
   ]
 end
 
-to move-supply-company [my-supply-company dest-junction]
-  ask my-supply-company [
+to move-motor-company [my-motor-company dest-junction]
+  ask my-motor-company [
+    face current-junction
     if-else distance current-junction <= speed [
       move-to current-junction
       if dest-junction = nobody [stop]
@@ -192,14 +176,12 @@ to move-supply-company [my-supply-company dest-junction]
         nw:set-context junctions roads
         set shortest-path nw:turtles-on-weighted-path-to dest-junction weight
       ]
-      ;show current-junction
-      ;show dest-junction
       if is-list? shortest-path and length shortest-path > 1 [
         set current-junction item 1 shortest-path
         face current-junction
       ]
     ] [
-      set speed supply-company-speed * time-scale * map-scale
+      set speed motor-company-speed * map-scale
       forward speed * (random-float 0.5 + 0.75)
     ]
   ]

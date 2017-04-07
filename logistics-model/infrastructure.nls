@@ -24,7 +24,7 @@ end
 to step-infrastructure
   update-tracks
   update-trains
-  update-railhead
+  if ticks mod 24 = 0 [update-railhead]
 end
 
 to setup-junctions
@@ -102,7 +102,7 @@ to setup-trains
     setxy [xcor] of start-station [ycor] of start-station
     set supply 0
     set capacity train-capacity
-    set speed train-speed * map-scale * time-scale
+    set speed train-speed * map-scale
     set current-station start-station
     set color yellow
     set size 2
@@ -141,7 +141,7 @@ to update-trains
         set current-station next-station
       ]
     ][
-      set speed train-speed * map-scale * time-scale
+      set speed train-speed * map-scale
       let current-track track [who] of previous-station [who] of current-station
       forward speed * random-float 1 * [health] of current-track / 100
     ]
@@ -217,14 +217,38 @@ to-report railhead-value [my-station]
   ;report total-dist
   
   if my-station = source [report 0]
+  let my-junction one-of junctions with [label = [label] of my-station]
   
   let value 0
   ask german-corps [
-    let dist-from-station distance my-station
-    if dist-from-station > 40 * map-scale and dist-from-station < 90 * map-scale [
-      ask my-station [
-        set value value + 1 / distance source
+    nw:set-context junctions roads
+    let dist-from-station 0
+    ask current-junction [set dist-from-station nw:weighted-distance-to my-junction weight]
+    if is-number? dist-from-station [
+      if dist-from-station > 40 * map-scale and dist-from-station < 90 * map-scale [
+        ask my-station [
+          set value value + 1 / distance source
+        ]
       ]
+    ]
+  ]
+  report value
+end
+
+to-report fast-railhead-value [my-station]
+  ;let total-dist 0
+  ;ask german-corps [
+  ;  set total-dist total-dist + distance my-station
+  ;]
+  ;report total-dist
+  
+  if my-station = source [report 0]
+  
+  let value 0
+  ask german-corps [
+    let dist-from-station distance railhead
+    if dist-from-station > 40 * map-scale and dist-from-station < 90 * map-scale [
+      ask my-station [set value value + 1 / distance source]
     ]
   ]
   report value

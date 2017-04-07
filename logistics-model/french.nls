@@ -5,12 +5,16 @@ french-corps-own [units current-junction speed attrition loss-threshold plunder]
 globals [destruction]
 
 to setup-french
-  let start-junction one-of junctions with [label = "Cambrai"]
   set-default-shape french-corps "circle"
   
-  create-french-corps 6 [
+  create-french-corps 2 [
+    ;let start-junction one-of junctions with [label = "Le Cateau"]
+    let start-junction one-of junctions with [label = "Cambrai"]
     setxy [xcor] of start-junction [ycor] of start-junction
     set current-junction start-junction
+  ]
+  
+  ask french-corps [
     set color blue
     set size 1
     set speed allied-speed * map-scale * time-scale
