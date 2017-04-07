@@ -368,7 +368,7 @@ MONITOR
 440
 60
 distance from railhead
-round german-dist-from-station railhead
+round dist-from-railhead
 17
 1
 11

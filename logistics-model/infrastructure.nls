@@ -183,7 +183,7 @@ to update-tracks
 end
 
 to update-railhead
-  set railhead item 0 sort-by [[s1 s2] -> railhead-value s1 < railhead-value s2] stations
+  set railhead item 0 sort-by [[s1 s2] -> railhead-value s1 > railhead-value s2] stations
   ask stations [set color green]
   ask railhead [
     set color red
@@ -201,6 +201,14 @@ to update-railhead
   ]
 end
 
+to-report dist-from-railhead
+  let total-dist 0
+  ask german-corps [
+    set total-dist total-dist + distance railhead
+  ]
+  report total-dist / map-scale / 6
+end
+
 to-report railhead-value [my-station]
   ;let total-dist 0
   ;ask german-corps [
@@ -208,9 +216,16 @@ to-report railhead-value [my-station]
   ;]
   ;report total-dist
   
-  let total-dist 0
+  if my-station = source [report 0]
+  
+  let value 0
   ask german-corps [
-    set total-dist total-dist + distance my-station
+    let dist-from-station distance my-station
+    if dist-from-station > 40 * map-scale and dist-from-station < 90 * map-scale [
+      ask my-station [
+        set value value + 1 / distance source
+      ]
+    ]
   ]
-  report total-dist
+  report value
 end
