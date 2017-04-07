@@ -1,6 +1,8 @@
 breed [german-corps a-german-corps]
+breed [supply-companys supply-company]
 
 german-corps-own [supply capacity current-junction speed units attrition]
+supply-companys-own [supply capacity current-junction speed corps]
 
 to setup-germans
   
@@ -8,8 +10,7 @@ to setup-germans
   
   let start-junction one-of junctions with [label = "Brussels"]
   
-  create-german-corps 6
-  [
+  create-german-corps 6 [
     setxy [xcor] of start-junction [ycor] of start-junction
     set supply 100
     set current-junction start-junction
@@ -19,11 +20,25 @@ to setup-germans
     set units german-num-units
     set capacity german-supply-capacity
   ]
+  
+  let german-corps-list []
+  ask german-corps [ set german-corps-list lput self german-corps-list ] 
+  
+  foreach german-corps-list [ my-german-corps ->
+    create-supply-companys 0 [
+      setxy [xcor] of my-german-corps [ycor] of my-german-corps
+      set supply 0
+      set capacity 100
+      set current-junction start-junction
+      set speed supply-company-speed * time-scale * map-scale
+      set corps my-german-corps 
+    ]
+  ]
 end
 
 to step-german
   check-french-corps
-  supply-german-corps
+  supply-german-corps-continous
 end
 
 ;; dest_label: label of the destination
@@ -108,7 +123,7 @@ to attack-french-corps
     ask german-corps [if supply > 0 [set supply supply - supply-decay * time-scale ]]
 end
 
-to supply-german-corps
+to supply-german-corps-continous
   ask german-corps [
     ;; For now , just make it indirectly proportional:
     let dist-railhead distance railhead
@@ -125,6 +140,67 @@ to supply-german-corps
       set supply capacity
     ][
       set supply supply + supply-gain
+    ]
+  ]
+end
+
+to supply-german-corps
+  ask supply-companys [
+    
+    if current-junction = railhead and distance current-junction <= speed and supply < capacity [
+      move-to current-junction
+      set supply supply + 10
+      if supply >= capacity [
+        set supply capacity
+      ]
+    stop
+    ]
+    
+    if supply = 0 [
+      let railhead-label [label] of railhead
+      move-supply-company self one-of junctions with [label = railhead-label]
+      stop
+    ]
+    
+    if distance corps <= speed * 2 [
+      set supply supply - 10
+      ask corps [
+        set supply supply + 10
+        if supply >= capacity [
+          set supply capacity
+        ]
+      ]
+      if-else [supply] of corps = [capacity] of corps [
+        set supply 0
+      ][
+        move-supply-company self [current-junction] of corps
+      ]
+      stop
+    ]
+    
+    move-supply-company self [current-junction] of corps
+  ]
+end
+
+to move-supply-company [my-supply-company dest-junction]
+  ask my-supply-company [
+    if-else distance current-junction <= speed [
+      move-to current-junction
+      if dest-junction = nobody [stop]
+      let shortest-path (list current-junction)
+      ask current-junction [
+        nw:set-context junctions roads
+        set shortest-path nw:turtles-on-weighted-path-to dest-junction weight
+      ]
+      ;show current-junction
+      ;show dest-junction
+      if is-list? shortest-path and length shortest-path > 1 [
+        set current-junction item 1 shortest-path
+        face current-junction
+      ]
+    ] [
+      set speed supply-company-speed * time-scale * map-scale
+      forward speed * (random-float 0.5 + 0.75)
     ]
   ]
 end

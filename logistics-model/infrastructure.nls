@@ -17,7 +17,7 @@ to setup-infrastructure
   setup-stations
   setup-tracks
   setup-trains
-  set railhead one-of stations with [label = "Cambrai"]
+  set railhead one-of stations with [label = "Landen"]
   set source one-of stations with [label = "Aix-la-Chapelle"]
 end
 
@@ -183,7 +183,7 @@ to update-tracks
 end
 
 to update-railhead
-  set railhead item 0 sort-by [[s1 s2] -> german-dist-from-station s1 < german-dist-from-station s2] stations
+  set railhead item 0 sort-by [[s1 s2] -> railhead-value s1 < railhead-value s2] stations
   ask stations [set color green]
   ask railhead [
     set color red
@@ -201,7 +201,13 @@ to update-railhead
   ]
 end
 
-to-report german-dist-from-station [my-station]
+to-report railhead-value [my-station]
+  ;let total-dist 0
+  ;ask german-corps [
+  ;  set total-dist total-dist + distance my-station
+  ;]
+  ;report total-dist
+  
   let total-dist 0
   ask german-corps [
     set total-dist total-dist + distance my-station

@@ -218,7 +218,7 @@ supply-company-speed
 supply-company-speed
 0
 60
-40.0
+60.0
 5
 1
 km / day
