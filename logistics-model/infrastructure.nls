@@ -22,9 +22,9 @@ to setup-infrastructure
 end
 
 to step-infrastructure
+  if ticks mod 24 = 0 [update-railhead]
   update-tracks
   update-trains
-  if ticks mod 24 = 0 [update-railhead]
 end
 
 to setup-junctions
@@ -97,11 +97,13 @@ to setup-trains
   
   let start-station one-of stations with [label = "Aix-la-Chapelle"]
   
+  let train-speed 10 ;km/h 
+  
   create-trains 6
   [
     setxy [xcor] of start-station [ycor] of start-station
     set supply 0
-    set capacity train-capacity
+    set capacity 200 ;tons
     set speed train-speed * map-scale
     set current-station start-station
     set color yellow
@@ -141,7 +143,6 @@ to update-trains
         set current-station next-station
       ]
     ][
-      set speed train-speed * map-scale
       let current-track track [who] of previous-station [who] of current-station
       forward speed * random-float 1 * [health] of current-track / 100
     ]
@@ -149,6 +150,22 @@ to update-trains
 end
 
 to update-tracks
+  ;; Repair tracks
+  ask railhead [
+    nw:set-context stations tracks
+    let shortest-path nw:weighted-path-to one-of stations with [label = "Aix-la-Chapelle"] weight
+    let repairable-tracks link-set shortest-path
+    ask min-one-of repairable-tracks [health] [
+      let repair-ammount 10 * time-scale
+      if-else repair-ammount + health > 100 [
+        set health 100
+      ][
+        set health health + repair-ammount
+      ]
+    ]
+  ]
+  
+  ;; Update track colors
   let health5 [130 255 56]
   let health4 [147 193 42]
   let health3 [164 131 28]
@@ -156,17 +173,12 @@ to update-tracks
   let health1 [199 7 0]
   let c 55
 
-  ;print "test1"
-
   ask tracks [
-    ;print trackHealth
     if health >= 0 and health < 20 [
       set c health1
-     ; print "health1"
     ]
     if health >= 20 and health < 40 [
       set c health2
-      ;print "health2"
     ]
     if health >= 40 and health < 60 [
       set c health3
@@ -176,29 +188,16 @@ to update-tracks
     ]
     if health >= 80 and health <= 100 [
       set c health5
-      ;print "test2"
     ]
     set color c
   ]
 end
 
 to update-railhead
+  let train-repair 50 ;per day
   set railhead item 0 sort-by [[s1 s2] -> railhead-value s1 > railhead-value s2] stations
   ask stations [set color green]
-  ask railhead [
-    set color red
-    nw:set-context stations tracks
-    let shortest-path nw:weighted-path-to one-of stations with [label = "Aix-la-Chapelle"] weight
-    let my-tracks link-set shortest-path
-    ask min-one-of my-tracks [health] [
-      let repair-ammount train-repair * time-scale
-      if-else repair-ammount + health > 100 [
-        set health 100
-      ][
-        set health health + repair-ammount
-      ]
-    ]
-  ]
+  ask railhead [set color red]
 end
 
 to-report dist-from-railhead
@@ -210,17 +209,12 @@ to-report dist-from-railhead
 end
 
 to-report railhead-value [my-station]
-  ;let total-dist 0
-  ;ask german-corps [
-  ;  set total-dist total-dist + distance my-station
-  ;]
-  ;report total-dist
-  
   if my-station = source [report 0]
   let my-junction one-of junctions with [label = [label] of my-station]
   
   let value 0
-  ask german-corps [
+  let my-german-corps max-one-of german-corps [distance source]
+  ask my-german-corps [
     nw:set-context junctions roads
     let dist-from-station 0
     ask current-junction [set dist-from-station nw:weighted-distance-to my-junction weight]
@@ -230,25 +224,6 @@ to-report railhead-value [my-station]
           set value value + 1 / distance source
         ]
       ]
-    ]
-  ]
-  report value
-end
-
-to-report fast-railhead-value [my-station]
-  ;let total-dist 0
-  ;ask german-corps [
-  ;  set total-dist total-dist + distance my-station
-  ;]
-  ;report total-dist
-  
-  if my-station = source [report 0]
-  
-  let value 0
-  ask german-corps [
-    let dist-from-station distance railhead
-    if dist-from-station > 40 * map-scale and dist-from-station < 90 * map-scale [
-      ask my-station [set value value + 1 / distance source]
     ]
   ]
   report value

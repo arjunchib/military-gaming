@@ -51,10 +51,10 @@ hours
 30.0
 
 BUTTON
-10
 15
-76
-48
+20
+81
+53
 NIL
 setup
 NIL
@@ -68,10 +68,10 @@ NIL
 1
 
 BUTTON
-85
-15
-148
-48
+90
+20
+153
+53
 NIL
 step
 NIL
@@ -86,14 +86,14 @@ NIL
 
 SLIDER
 255
-190
+100
 500
-223
+133
 supply-decay
 supply-decay
 0
 100
-30.0
+20.0
 5
 1
 per day
@@ -101,9 +101,9 @@ HORIZONTAL
 
 PLOT
 255
-410
+285
 500
-572
+447
 German Supply
 NIL
 NIL
@@ -119,39 +119,24 @@ PENS
 
 SLIDER
 10
-225
+135
 230
-258
+168
 retreat-distance
 retreat-distance
 0
 20
-0.0
+2.0
 1
 1
 km
 HORIZONTAL
 
 SLIDER
-10
-155
-230
-188
-destruction-capacity
-destruction-capacity
-0
-1700
-700.0
-100
-1
-NIL
-HORIZONTAL
-
-SLIDER
 255
-225
+135
 500
-258
+168
 pursue-distance
 pursue-distance
 0
@@ -163,10 +148,10 @@ km
 HORIZONTAL
 
 BUTTON
-155
-15
-218
-48
+160
+20
+223
+53
 go
 step
 T
@@ -179,81 +164,11 @@ NIL
 NIL
 1
 
-SLIDER
-10
-85
-230
-118
-track-damage
-track-damage
-0
-100
-50.0
-5
-1
-per day
-HORIZONTAL
-
-SLIDER
-255
-120
-500
-153
-motor-company-speed
-motor-company-speed
-0
-60
-10.0
-5
-1
-km/h
-HORIZONTAL
-
-TEXTBOX
-10
-545
-160
-563
-Trains
-11
-0.0
-1
-
-SLIDER
-8
-563
-228
-596
-train-speed
-train-speed
-0
-30
-10.0
-5
-1
-km/h
-HORIZONTAL
-
-SLIDER
-8
-598
-228
-631
-train-capacity
-train-capacity
-0
-200
-90.0
-5
-1
-NIL
-HORIZONTAL
-
 TEXTBOX
 15
-65
+80
 165
-83
+98
 Allies
 11
 0.0
@@ -261,9 +176,9 @@ Allies
 
 TEXTBOX
 260
-65
+80
 410
-83
+98
 German
 11
 0.0
@@ -271,29 +186,14 @@ German
 
 SLIDER
 10
-120
+170
 230
-153
-track-damage-threshold
-track-damage-threshold
-0
-100
-10.0
-5
-1
-NIL
-HORIZONTAL
-
-SLIDER
-10
-260
-230
-293
+203
 allied-speed
 allied-speed
 0
 60
-40.0
+60.0
 5
 1
 km / day
@@ -301,14 +201,14 @@ HORIZONTAL
 
 SLIDER
 255
-260
+170
 500
-293
+203
 german-speed
 german-speed
 0
 60
-40.0
+30.0
 5
 1
 km /day
@@ -316,9 +216,9 @@ HORIZONTAL
 
 PLOT
 10
-375
+285
 230
-536
+446
 Total Allied Units
 NIL
 NIL
@@ -335,9 +235,9 @@ PENS
 MONITOR
 255
 15
-440
+385
 60
-distance from railhead
+dist from railhead
 round dist-from-railhead
 17
 1
@@ -356,9 +256,9 @@ round (ticks * time-scale)
 
 SLIDER
 255
-295
+205
 500
-328
+238
 german-num-units
 german-num-units
 0
@@ -371,29 +271,29 @@ HORIZONTAL
 
 SLIDER
 255
-330
+240
 500
-363
+273
 german-attrition
 german-attrition
 0
-1
-0.039
+0.1
+0.018
 0.001
 1
-kills per hour
+kills per hour per unit
 HORIZONTAL
 
 SLIDER
 10
-190
+100
 230
-223
+133
 allied-loss-threshold
 allied-loss-threshold
 0
 10000
-3000.0
+10000.0
 1000
 1
 per corps
@@ -401,9 +301,9 @@ HORIZONTAL
 
 SLIDER
 10
-295
+205
 230
-328
+238
 allied-num-units
 allied-num-units
 0
@@ -416,48 +316,29 @@ HORIZONTAL
 
 SLIDER
 10
-330
+240
 230
-363
+273
 allied-attrition
 allied-attrition
 0
-1
-0.0394
-0.0001
+0.1
+0.03
+0.001
 1
 kills per hour
 HORIZONTAL
 
-SLIDER
-7
-635
-227
-668
-train-repair
-train-repair
-0
-100
-50.0
-5
+MONITOR
+390
+15
+440
+60
+trucks
+round number-trucks
+17
 1
-per day
-HORIZONTAL
-
-SLIDER
-255
-155
-500
-188
-motor-transfer-rate
-motor-transfer-rate
-0
-54
-20.0
-5
-1
-tons / hour
-HORIZONTAL
+11
 
 @#$#@#$#@
 ## WHAT IS IT?
