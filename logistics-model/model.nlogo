@@ -16,6 +16,13 @@ to setup
 end
 
 to step
+  if count german-corps = 0 [stop]
+  let should-stop true
+  let meaux one-of junctions with [label = "Meaux"]
+  ask german-corps [
+    if distance meaux > 0 [set should-stop false]
+  ]
+  if should-stop [stop]
   step-infrastructure
   step-german
   step-french
@@ -136,7 +143,7 @@ retreat-distance
 retreat-distance
 0
 20
-0.0
+1.0
 1
 1
 km
@@ -188,7 +195,7 @@ allied-speed
 allied-speed
 0
 60
-60.0
+25.0
 5
 1
 km / day
@@ -203,7 +210,7 @@ german-speed
 german-speed
 0
 60
-35.0
+15.0
 5
 1
 km /day
@@ -319,7 +326,7 @@ allied-attrition
 allied-attrition
 0
 0.1
-0.03
+0.02
 0.001
 1
 kills per hour

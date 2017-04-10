@@ -1,6 +1,6 @@
 breed [french-corps a-french-corps]
 
-french-corps-own [units current-junction speed attrition loss-threshold plunder]
+french-corps-own [units current-junction speed attrition loss-threshold plunder attacker]
 
 globals [destruction track-damage]
 
@@ -22,6 +22,8 @@ to setup-french
     set units allied-num-units
     set loss-threshold allied-num-units - allied-loss-threshold
     set plunder track-damage
+    set attrition allied-attrition
+    set attacker nobody
   ]
   
   set destruction 0
@@ -29,61 +31,80 @@ end
 
 to step-french
   ask french-corps [
-    if-else count german-corps in-radius retreat-distance * map-scale > 0 or
-    units < loss-threshold [
-      french-retreat self
-    ][
-      french-plunder self
+    if attacker != nobody and units > loss-threshold [
+      french-attack
+      stop
     ]
+    if attacker = nobody [
+      french-plunder
+      stop
+    ]
+    french-retreat
   ]
 end
 
-to french-retreat [my-french-corps]
-  let retreat-radius min (list 2.0 retreat-distance)
-  if count german-corps in-radius retreat-radius = 0 [
-    ;set loss-threshold units - allied-loss-threshold
-    set plunder track-damage
-  ]
-  move-french my-french-corps one-of junctions with [label = "Paris"]
+to french-retreat
+  move-french one-of junctions with [label = "Paris"]
 end
 
-to french-plunder [my-french-corps]
-  let track-damage-threshold 10
-  nw:set-context junctions roads
-  ask my-french-corps [
-    if distance current-junction <= speed [
-      move-to current-junction
-      let current-junction-label [label] of current-junction
-      let my-current-station one-of stations with [label = current-junction-label]
-      
-      if-else my-current-station != nobody [
-        let min-link nobody
-        
-        if my-current-station != nobody [
-          ask my-current-station [
-            set min-link min-one-of my-out-tracks with [health > track-damage-threshold] [travel-time]
-          ]
+to french-plunder
+  if-else distance current-junction <= speed [
+    move-to current-junction
+    let current-junction-label [label] of current-junction
+    let my-current-station one-of stations with [label = current-junction-label]
+    
+    if my-current-station != nobody [
+      let min-link nobody
+      ask my-current-station [
+        set min-link min-one-of my-out-tracks with [health > 0] [travel-time]
+      ]
+      if (min-link != nobody) [
+        let damage-given plunder * time-scale
+        set destruction destruction + damage-given
+        ask min-link [
+          if-else health - damage-given >= 0[set health health - damage-given][set health 0]
         ]
-        
-        if (min-link != nobody) [
-          let damage-given plunder * time-scale
-          set destruction destruction + damage-given
-          ask min-link [set health health - damage-given]
-        ]
-      ][
-        let paris-junction one-of junctions with [label = "Paris"]
-        let dist-paris distance paris-junction
-        let dest-junction item 0 sort-by [
-          [junction1 junction2] -> distance junction1 < distance junction2
-        ] junctions with [distance paris-junction <= dist-paris]
-        move-french self dest-junction
+        stop
       ]
     ]
+    let dest-station get-new-dest-station
+    move-french dest-station
+  ][
+    move-french current-junction
   ]
 end
 
-to move-french [my-french-corps dest-junction]
-  ask my-french-corps [
+to-report get-new-dest-station
+  let paris-junction one-of junctions with [label = "Paris"]
+  let my-current-junction current-junction
+  let possible-junctions (list)
+  nw:set-context junctions roads
+  let dist-paris nw:weighted-distance-to paris-junction weight
+  ask junctions with [self != my-current-junction] [
+    let dist nw:weighted-distance-to paris-junction weight
+    if is-number? dist and is-number? dist-paris and dist < dist-paris [
+      set possible-junctions lput self possible-junctions
+    ]
+  ]
+  let dest-junction paris-junction
+  if length possible-junctions > 0 [
+    set dest-junction item 0 sort-by [
+      [junction1 junction2] -> distance junction1 < distance junction2
+    ] turtle-set possible-junctions
+  ]
+  report dest-junction
+end
+
+to french-attack
+  let damage-given attrition * units * (random-float 0.5 + 0.75)
+  ask attacker [
+    set units units - damage-given
+    if units <= 0 [die]
+  ]
+end
+
+to move-french [dest-junction]
+  ask self [
     if-else distance current-junction <= speed [
       move-to current-junction
       let shortest-path (list current-junction)

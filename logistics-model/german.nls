@@ -27,6 +27,7 @@ to setup-germans
 end
 
 to step-german
+  ask french-corps [set attacker nobody]
   check-french-corps
   supply-german-corps
 end
@@ -87,16 +88,11 @@ to attack-french-corps
   ;; Fight
   set attrition german-attrition
   let damage-given attrition * units * ammo-modifier * (random-float 0.5 + 0.75)
-  let damage-taken 0
   ask one-of french-corps in-radius 0.5 [
-    set plunder 0
-    set attrition allied-attrition
-    set damage-taken attrition * units * (random-float 0.5 + 0.75)
+    set attacker myself
     set units units - damage-given
     if units <= 0 [die]
   ]
-  set units units - damage-taken
-  if units <= 0 [die]
   
   ;; Lose supply
     ask german-corps [if supply > 0 [set supply supply - supply-decay * time-scale ]]
