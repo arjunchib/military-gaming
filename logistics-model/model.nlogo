@@ -22,6 +22,16 @@ to step
   update-plots
   tick
 end
+
+to-report days-to-date [day]
+  if day < 12 [
+    report (word "August " (day + 20) ", 1914")
+  ]
+  if day < 42 [
+    report (word "September " (day - 11) ", 1914")
+  ]
+  report (word "October " (day - 41) ", 1914")
+end
 @#$#@#$#@
 GRAPHICS-WINDOW
 535
@@ -126,22 +136,7 @@ retreat-distance
 retreat-distance
 0
 20
-2.0
-1
-1
-km
-HORIZONTAL
-
-SLIDER
-255
-135
-500
-168
-pursue-distance
-pursue-distance
-0
-20
-1.0
+0.0
 1
 1
 km
@@ -208,7 +203,7 @@ german-speed
 german-speed
 0
 60
-30.0
+35.0
 5
 1
 km /day
@@ -220,34 +215,35 @@ PLOT
 230
 446
 Total Allied Units
-NIL
-NIL
+hour
+units
 0.0
 10.0
 0.0
 100000.0
 true
 false
-"" "let total-units 0\nask french-corps [set total-units total-units + units]\nplot total-units"
+"" ""
 PENS
-"default" 1.0 0 -16777216 true "" "let total-units 0"
+"german" 1.0 0 -1184463 true "" "let total-units 0\nask german-corps [set total-units total-units + units]\nplot total-units"
+"french" 1.0 0 -13345367 true "" "let total-units 0\nask french-corps [set total-units total-units + units]\nplot total-units"
 
 MONITOR
 255
-15
-385
-60
-dist from railhead
+455
+390
+500
+dist from railhead (km)
 round dist-from-railhead
 17
 1
 11
 
 MONITOR
-445
-15
-502
-60
+450
+455
+500
+500
 days
 round (ticks * time-scale)
 17
@@ -278,7 +274,7 @@ german-attrition
 german-attrition
 0
 0.1
-0.018
+0.01
 0.001
 1
 kills per hour per unit
@@ -293,7 +289,7 @@ allied-loss-threshold
 allied-loss-threshold
 0
 10000
-10000.0
+3000.0
 1000
 1
 per corps
@@ -330,12 +326,23 @@ kills per hour
 HORIZONTAL
 
 MONITOR
-390
-15
-440
-60
+395
+455
+445
+500
 trucks
 round number-trucks
+17
+1
+11
+
+MONITOR
+255
+15
+505
+60
+Date
+days-to-date round (ticks * time-scale)
 17
 1
 11

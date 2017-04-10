@@ -61,7 +61,7 @@ to french-plunder [my-french-corps]
         
         if my-current-station != nobody [
           ask my-current-station [
-            set min-link min-one-of my-out-tracks with [health > track-damage-threshold] [weight]
+            set min-link min-one-of my-out-tracks with [health > track-damage-threshold] [travel-time]
           ]
         ]
         

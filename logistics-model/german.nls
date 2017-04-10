@@ -34,8 +34,8 @@ end
 ;; dest_label: label of the destination
 ;; This proc moves the German corps along the shortest path between the 
 ;; current location of the German corps and the destination
-to move-german-corps [my-german-corps dest-junction]
-  ask my-german-corps [
+to move-german-corps [dest-junction]
+  ask self [
     nw:set-context junctions roads
     if-else distance current-junction <= speed [
       move-to current-junction
@@ -62,23 +62,17 @@ end
 to check-french-corps
   ask german-corps 
   [ 
-    ;; Only pursue/attack french-corps if they're alive
-    if supply > 20 [
-      ifelse any? french-corps in-radius pursue-distance
-      [
-        ;; If in attack-rad => attack
-        ifelse any? french-corps in-radius 0.5
-        [ 
+    if supply > 10 [
+      ;; Only pursue/attack french-corps if they have not reached paris
+      let paris one-of junctions with [label = "Paris"]
+      ifelse any? french-corps with [current-junction != paris] [
+        ifelse any? french-corps in-radius 0.5 [ ;; If in attack-rad => attack
           attack-french-corps 
-        ]
-        ;; Else, keep moving toward
-        [ 
+        ][;; Else, keep moving toward 
           pursue-french-corps
         ]
-      ]
-      [ 
-        ;print "Not near French-corps or French-corps are all dead; Moving towards Meaux"
-        move-german-corps self one-of junctions with [label = "Meaux"]
+      ][ 
+        move-german-corps one-of junctions with [label = "Meaux"]
       ]
     ]
   ]
@@ -86,17 +80,13 @@ end
 
 to pursue-french-corps
   ;; Follow French's movement direction
-  move-german-corps self [current-junction] of min-one-of french-corps [distance myself]
+  move-german-corps [current-junction] of min-one-of french-corps [distance myself]
 end
 
 to attack-french-corps
-  ;; Reduce french-corps size?
-  ;print "Attacking french-corps"
-  
   ;; Fight
-  ;; For now just decrease the size of french-corps
   set attrition german-attrition
-  let damage-given attrition * units * (random-float 0.5 + 0.75)
+  let damage-given attrition * units * ammo-modifier * (random-float 0.5 + 0.75)
   let damage-taken 0
   ask one-of french-corps in-radius 0.5 [
     set plunder 0
@@ -106,23 +96,33 @@ to attack-french-corps
     if units <= 0 [die]
   ]
   set units units - damage-taken
+  if units <= 0 [die]
   
   ;; Lose supply
     ask german-corps [if supply > 0 [set supply supply - supply-decay * time-scale ]]
 end
 
+to-report ammo-modifier
+  if supply > capacity * 0.8 [report 1.0]
+  if supply > capacity * 0.6 [report 0.9]
+  if supply > capacity * 0.4 [report 0.5]
+  if supply > capacity * 0.2 [report 0.2]
+  if supply > 0 [report 0.1]
+  report 0
+end
+
 to supply-german-corps
-  let wagon-speed 25 
+  let wagon-speed 25    ;km/h
   let number-wagons 900
-  let wagon-capacity 1
-  let truck-speed 30
-  let truck-capacity 6
-  let truck-destruction-modifier 1 - 0.00125
+  let wagon-capacity 1  ;tons
+  let truck-speed 30    ;km/h
+  let truck-capacity 6  ;tons
+  let truck-loss 2.5    ;per day
+  
+  if number-trucks >= truck-loss * time-scale [set number-trucks (number-trucks - truck-loss * time-scale)]
   
   ask german-corps [
     let dist-railhead distance railhead
-    
-    if number-trucks > 32 [set number-trucks number-trucks * truck-destruction-modifier]
     
     let wagon-supply-gain number-wagons * wagon-capacity * (dist-railhead / (wagon-speed * time-scale * map-scale) / 2) / count german-corps
     let motor-supply-gain number-trucks * truck-capacity * (dist-railhead / (truck-speed * map-scale) / 2) / count german-corps

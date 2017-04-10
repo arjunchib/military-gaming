@@ -1,4 +1,4 @@
-globals [railhead source]
+globals [railhead source train-speed]
 
 breed [stations station]
 undirected-link-breed [tracks track]
@@ -7,11 +7,12 @@ undirected-link-breed [roads road]
 breed [trains train]
 
 trains-own [current-station previous-station speed supply capacity]
-tracks-own [health weight]
+tracks-own [health travel-time]
 roads-own [weight]
 stations-own [supply]
 
 to setup-infrastructure
+  set train-speed 10 ;km/h 
   setup-junctions
   setup-roads
   setup-stations
@@ -87,7 +88,7 @@ to setup-tracks
     ask tracks [
       set health 100
       set color health5
-      set weight link-length
+      set travel-time link-length / (train-speed * map-scale)
     ]
   ]
 end
@@ -96,8 +97,6 @@ to setup-trains
   set-default-shape trains "train freight engine"
   
   let start-station one-of stations with [label = "Aix-la-Chapelle"]
-  
-  let train-speed 10 ;km/h 
   
   create-trains 6
   [
@@ -135,12 +134,15 @@ to update-trains
         let shortest-path (list current-station)
         ask current-station [
           nw:set-context stations tracks
-          set shortest-path nw:turtles-on-weighted-path-to dest-station weight
+          set shortest-path nw:turtles-on-weighted-path-to dest-station travel-time
         ]
         let next-station item 1 shortest-path
-        face next-station
-        set previous-station current-station
-        set current-station next-station
+        let next-link track [who] of next-station [who] of current-station
+        if [health] of next-link = 100 [
+          face next-station
+          set previous-station current-station
+          set current-station next-station
+        ]
       ]
     ][
       let current-track track [who] of previous-station [who] of current-station
@@ -150,19 +152,32 @@ to update-trains
 end
 
 to update-tracks
+  let repair-ammount 50 * time-scale
+  
   ;; Repair tracks
   ask railhead [
     nw:set-context stations tracks
-    let shortest-path nw:weighted-path-to one-of stations with [label = "Aix-la-Chapelle"] weight
-    let repairable-tracks link-set shortest-path
-    ask min-one-of repairable-tracks [health] [
-      let repair-ammount 10 * time-scale
-      if-else repair-ammount + health > 100 [
-        set health 100
-      ][
-        set health health + repair-ammount
+    let shortest-path nw:weighted-path-to one-of stations with [label = "Aix-la-Chapelle"] travel-time
+    let repairable-tracks (link-set shortest-path) with [health < 100]
+    if count repairable-tracks > 0 [
+      ask max-one-of repairable-tracks [health] [
+        if-else repair-ammount + health > 100 [
+          set health 100
+        ][
+          set health health + repair-ammount
+        ]
       ]
     ]
+  ]
+  
+  ;; Calc travel-time
+  ask tracks [
+    if-else health = 100 [
+      set travel-time link-length / (train-speed * map-scale)
+    ][
+      set travel-time travel-time + 1
+    ]
+    ;set travel-time link-length / (train-speed * map-scale) + (100 - health) / (repair-ammount / time-scale)
   ]
   
   ;; Update track colors
@@ -174,19 +189,19 @@ to update-tracks
   let c 55
 
   ask tracks [
-    if health >= 0 and health < 20 [
+    if health >= 0 and health < 25 [
       set c health1
     ]
-    if health >= 20 and health < 40 [
+    if health >= 25 and health < 50 [
       set c health2
     ]
-    if health >= 40 and health < 60 [
+    if health >= 50 and health < 75 [
       set c health3
     ]
-    if health >= 60 and health < 80 [
+    if health >= 75 and health < 100 [
       set c health4
     ]
-    if health >= 80 and health <= 100 [
+    if health = 100 [
       set c health5
     ]
     set color c
@@ -219,7 +234,7 @@ to-report railhead-value [my-station]
     let dist-from-station 0
     ask current-junction [set dist-from-station nw:weighted-distance-to my-junction weight]
     if is-number? dist-from-station [
-      if dist-from-station > 40 * map-scale and dist-from-station < 90 * map-scale [
+      if dist-from-station > 20 * map-scale and dist-from-station < 50 * map-scale [
         ask my-station [
           set value value + 1 / distance source
         ]
