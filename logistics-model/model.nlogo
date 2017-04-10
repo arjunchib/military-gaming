@@ -68,9 +68,9 @@ hours
 30.0
 
 BUTTON
-15
+25
 20
-81
+91
 53
 NIL
 setup
@@ -85,9 +85,9 @@ NIL
 1
 
 BUTTON
-90
+100
 20
-153
+163
 53
 NIL
 step
@@ -102,9 +102,9 @@ NIL
 1
 
 SLIDER
-255
+270
 100
-500
+515
 133
 supply-decay
 supply-decay
@@ -117,10 +117,10 @@ per day
 HORIZONTAL
 
 PLOT
-255
-285
-500
-447
+270
+250
+515
+412
 German Supply
 NIL
 NIL
@@ -134,25 +134,10 @@ false
 PENS
 "default" 1.0 0 -16777216 true "" "let total-supply 0"
 
-SLIDER
-10
-135
-230
-168
-retreat-distance
-retreat-distance
-0
-20
-1.0
-1
-1
-km
-HORIZONTAL
-
 BUTTON
-160
+170
 20
-223
+233
 53
 go
 step
@@ -177,9 +162,9 @@ Allies
 1
 
 TEXTBOX
-260
+275
 80
-410
+425
 98
 German
 11
@@ -188,29 +173,29 @@ German
 
 SLIDER
 10
-170
-230
-203
+135
+255
+168
 allied-speed
 allied-speed
 0
 60
-25.0
+40.0
 5
 1
 km / day
 HORIZONTAL
 
 SLIDER
-255
-170
-500
-203
+270
+135
+515
+168
 german-speed
 german-speed
 0
 60
-15.0
+35.0
 5
 1
 km /day
@@ -218,9 +203,9 @@ HORIZONTAL
 
 PLOT
 10
-285
-230
-446
+250
+255
+411
 Total Allied Units
 hour
 units
@@ -236,10 +221,10 @@ PENS
 "french" 1.0 0 -13345367 true "" "let total-units 0\nask french-corps [set total-units total-units + units]\nplot total-units"
 
 MONITOR
-255
-455
-390
-500
+270
+415
+405
+460
 dist from railhead (km)
 round dist-from-railhead
 17
@@ -247,10 +232,10 @@ round dist-from-railhead
 11
 
 MONITOR
-450
-455
-500
-500
+465
+415
+515
+460
 days
 round (ticks * time-scale)
 17
@@ -258,10 +243,10 @@ round (ticks * time-scale)
 11
 
 SLIDER
-255
-205
-500
-238
+270
+170
+515
+203
 german-num-units
 german-num-units
 0
@@ -273,10 +258,10 @@ per corps
 HORIZONTAL
 
 SLIDER
-255
-240
-500
-273
+270
+205
+515
+238
 german-attrition
 german-attrition
 0
@@ -290,7 +275,7 @@ HORIZONTAL
 SLIDER
 10
 100
-230
+255
 133
 allied-loss-threshold
 allied-loss-threshold
@@ -304,9 +289,9 @@ HORIZONTAL
 
 SLIDER
 10
-205
-230
-238
+170
+255
+203
 allied-num-units
 allied-num-units
 0
@@ -319,9 +304,9 @@ HORIZONTAL
 
 SLIDER
 10
-240
-230
-273
+205
+255
+238
 allied-attrition
 allied-attrition
 0
@@ -333,10 +318,10 @@ kills per hour
 HORIZONTAL
 
 MONITOR
-395
-455
-445
-500
+410
+415
+460
+460
 trucks
 round number-trucks
 17
@@ -344,15 +329,26 @@ round number-trucks
 11
 
 MONITOR
-255
+270
 15
-505
+515
 60
 Date
 days-to-date round (ticks * time-scale)
 17
 1
 11
+
+SWITCH
+75
+420
+195
+453
+allied-retreat
+allied-retreat
+0
+1
+-1000
 
 @#$#@#$#@
 ## WHAT IS IT?

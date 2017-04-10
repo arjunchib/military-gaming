@@ -72,6 +72,7 @@ to setup-stations
     set color green
     set size 1.5
   ]
+  ;ask stations [set hidden? true]
 end
 
 to setup-tracks
@@ -152,7 +153,7 @@ to update-trains
 end
 
 to update-tracks
-  let repair-ammount 50 * time-scale
+  let repair-ammount 25 * time-scale
   
   ;; Repair tracks
   ask railhead [
@@ -181,31 +182,7 @@ to update-tracks
   ]
   
   ;; Update track colors
-  let health5 [130 255 56]
-  let health4 [147 193 42]
-  let health3 [164 131 28]
-  let health2 [181 69 14]
-  let health1 [199 7 0]
-  let c 55
-
-  ask tracks [
-    if health >= 0 and health < 25 [
-      set c health1
-    ]
-    if health >= 25 and health < 50 [
-      set c health2
-    ]
-    if health >= 50 and health < 75 [
-      set c health3
-    ]
-    if health >= 75 and health < 100 [
-      set c health4
-    ]
-    if health = 100 [
-      set c health5
-    ]
-    set color c
-  ]
+  ask tracks [set color hsb health 100 100]
 end
 
 to update-railhead

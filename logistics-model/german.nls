@@ -61,8 +61,7 @@ end
 ;;      If within attack-rad => Attack
 ;; Else keep moving towards Meaux
 to check-french-corps
-  ask german-corps 
-  [ 
+  ask german-corps [ 
     if supply > 10 [
       ;; Only pursue/attack french-corps if they have not reached paris
       let paris one-of junctions with [label = "Paris"]
@@ -81,7 +80,8 @@ end
 
 to pursue-french-corps
   ;; Follow French's movement direction
-  move-german-corps [current-junction] of min-one-of french-corps [distance myself]
+  let brussels one-of junctions with [label = "Brussels"]
+  move-german-corps [current-junction] of min-one-of french-corps [distance brussels]
 end
 
 to attack-french-corps
