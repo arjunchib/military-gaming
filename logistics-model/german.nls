@@ -16,7 +16,7 @@ to setup-germans
     setxy [xcor] of start-junction [ycor] of start-junction
     set supply 45
     set current-junction start-junction
-    set color yellow
+    set color red
     set size 1
     set speed german-speed * time-scale * map-scale
     set units german-num-units
@@ -27,7 +27,13 @@ to setup-germans
 end
 
 to step-german
-  ask french-corps [set attacker nobody]
+  ask french-corps [
+    set attacker nobody
+    set color blue
+  ]
+  ask german-corps [
+    set color red
+  ]
   check-french-corps
   supply-german-corps
 end
@@ -86,16 +92,18 @@ end
 
 to attack-french-corps
   ;; Fight
+  set color yellow
   set attrition german-attrition
   let damage-given attrition * units * ammo-modifier * (random-float 0.5 + 0.75)
   ask one-of french-corps in-radius 0.5 [
     set attacker myself
+    set color yellow
     set units units - damage-given
     if units <= 0 [die]
   ]
   
   ;; Lose supply
-    ask german-corps [if supply > 0 [set supply supply - supply-decay * time-scale ]]
+    ask german-corps [if supply > 0 [set supply supply - supply-decay * time-scale * (random-float 0.4 + 0.8)]]
 end
 
 to-report ammo-modifier

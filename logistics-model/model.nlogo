@@ -1,12 +1,17 @@
 __includes["infrastructure.nls" "german.nls" "french.nls"]
 
-extensions [csv nw]
+extensions [csv nw gis]
 
 globals [map-scale time-scale]
 
 to setup
   clear-all
-  ;import-drawing "map.png"
+;  let junction-dataset gis:load-dataset "maps/junctions.shp"
+;  gis:set-world-envelope gis:envelope-of junction-dataset
+;  foreach gis:feature-list-of junction-dataset [ feature ->
+;     gis:vertex-lists-of feature
+;  ]
+  import-drawing "map.png"
   set map-scale 1 / 4.53125
   set time-scale 1 / 24
   setup-infrastructure
@@ -110,7 +115,7 @@ supply-decay
 supply-decay
 0
 100
-20.0
+15.0
 5
 1
 per day
@@ -217,8 +222,8 @@ true
 false
 "" ""
 PENS
-"german" 1.0 0 -1184463 true "" "let total-units 0\nask german-corps [set total-units total-units + units]\nplot total-units"
-"french" 1.0 0 -13345367 true "" "let total-units 0\nask french-corps [set total-units total-units + units]\nplot total-units"
+"german" 1.0 0 -2674135 true "" "let total-units 0\nask german-corps [set total-units total-units + units]\nplot total-units"
+"allied" 1.0 0 -13345367 true "" "let total-units 0\nask french-corps [set total-units total-units + units]\nplot total-units"
 
 MONITOR
 270
@@ -265,9 +270,9 @@ SLIDER
 german-attrition
 german-attrition
 0
-0.1
 0.01
-0.001
+0.005
+0.0001
 1
 kills per hour per unit
 HORIZONTAL
@@ -280,9 +285,9 @@ SLIDER
 allied-loss-threshold
 allied-loss-threshold
 0
-10000
-3000.0
-1000
+2000
+0.0
+100
 1
 per corps
 HORIZONTAL
@@ -310,9 +315,9 @@ SLIDER
 allied-attrition
 allied-attrition
 0
-0.1
-0.02
-0.001
+0.01
+0.0035
+0.0001
 1
 kills per hour
 HORIZONTAL

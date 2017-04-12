@@ -47,11 +47,11 @@ for junction in junctions:
     if lon > maxLon:
         maxLon = lon
 
-scaleFactor = min(60.0 / (maxLat - minLat), 60.0 / (maxLon - minLon))
+scaleFactor = min(61.0 / (maxLat - minLat), 61.0 / (maxLon - minLon))
 botLeftLat = minLat - padding / scaleFactor
 botLeftLon = minLon - padding / scaleFactor
-topRightLat = botLeftLat + 60.0 / scaleFactor
-topRightLon = botLeftLon + 60.0 / scaleFactor
+topRightLat = botLeftLat + 61.0 / scaleFactor
+topRightLon = botLeftLon + 61.0 / scaleFactor
 print("Bottom Left: " + str(botLeftLat) + ", " + str(botLeftLon))
 print("Top Right: " + str(topRightLat) + ", " + str(topRightLon))
 

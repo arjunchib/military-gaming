@@ -39,7 +39,10 @@ to setup-junctions
       set label item 2 data
     ]
   ]
-  ask junctions [set color white]
+  ask junctions [
+    set color black
+    set label-color black
+  ]
   ask junctions [set hidden? true]
 end
 
@@ -52,7 +55,7 @@ to setup-roads
     ask junctions with [label = s] [create-roads-with junctions with [label = t]]
   ]
   ask roads [
-    set color white
+    set color black
     set weight link-length
   ]
 end
@@ -71,27 +74,34 @@ to setup-stations
   ask stations [
     set color green
     set size 1.5
+    set label-color black
   ]
   ;ask stations [set hidden? true]
 end
 
 to setup-tracks
-  let health5 [130 255 56]
-
   let track-data csv:from-file "tracks.csv"
   set-default-shape tracks "train"
   foreach track-data [ [data] ->
     let s item 0 data
     let t item 1 data
+    
+    let h 100
+    if length data > 2 [
+      set h item 2 data
+    ]
 
     ask stations with [label = s] [create-tracks-with stations with [label = t]]
-
-    ask tracks [
-      set health 100
-      set color health5
-      set travel-time link-length / (train-speed * map-scale)
+    
+    ask track [who] of one-of stations with [label = t] [who] of one-of stations with [label = s] [
+      set health h
     ]
   ]
+  ask tracks [
+      set color hsb health 100 80
+      set thickness 0.1
+      set travel-time link-length / (train-speed * map-scale)
+    ]
 end
 
 to setup-trains
@@ -182,7 +192,7 @@ to update-tracks
   ]
   
   ;; Update track colors
-  ask tracks [set color hsb health 100 100]
+  ask tracks [set color hsb health 100 80]
 end
 
 to update-railhead
